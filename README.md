@@ -1,1 +1,2 @@
-semana_lince
+# Semana Lince App
+### Control de registro de asistencia (backend)
