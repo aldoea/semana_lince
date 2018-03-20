@@ -128,7 +128,7 @@ CREATE TABLE IF NOT EXISTS registro (
   FOREIGN KEY (id_horario) REFERENCES horario (id),
   FOREIGN KEY (id_alumno) REFERENCES alumno (id)
 );
-drop user 'linceapp'@'localhost';
+
 CREATE USER 'linceapp'@'localhost'
   IDENTIFIED BY 'aghGQ$fdknpt#0rhmt457490dgfj45052nb3mg1q0r';
 GRANT ALL PRIVILEGES ON lince.* TO 'linceapp'@'localhost';
