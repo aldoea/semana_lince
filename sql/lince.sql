@@ -36,6 +36,7 @@ ESPECIALIDADES
  */
 
 CREATE DATABASE lince;
+USE lince;
 
 CREATE TABLE IF NOT EXISTS servicio (
   id     INT PRIMARY KEY AUTO_INCREMENT,
@@ -112,9 +113,10 @@ CREATE TABLE IF NOT EXISTS especialidad (
 );
 
 CREATE TABLE IF NOT EXISTS alumno (
-  id              BIGINT PRIMARY KEY,
+  id              BIGINT PRIMARY KEY AUTO_INCREMENT,
   nocontrol       CHAR(9)      NOT NULL UNIQUE,
   nombre          VARCHAR(150) NOT NULL,
+  semestre        SMALLINT     NOT NULL,
   id_especialidad INT          NOT NULL,
   FOREIGN KEY (id_especialidad) REFERENCES especialidad (id)
 );
@@ -129,6 +131,6 @@ CREATE TABLE IF NOT EXISTS registro (
   FOREIGN KEY (id_alumno) REFERENCES alumno (id)
 );
 
-CREATE USER 'linceapp'@'localhost'
+CREATE USER IF NOT EXISTS 'linceapp'@'localhost'
   IDENTIFIED BY 'aghGQ$fdknpt#0rhmt457490dgfj45052nb3mg1q0r';
 GRANT ALL PRIVILEGES ON lince.* TO 'linceapp'@'localhost';
