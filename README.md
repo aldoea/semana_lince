@@ -162,7 +162,7 @@ _Las actividades deben de ser filtradas por id_especialidad donde excluyan las q
 Ejemplo request body:
 ```JSON
 {
-	"id_actividad":1;
+	"id_actividad":1
 }
 ```
 
@@ -182,7 +182,7 @@ Ejemplo request body:
 Ejemplo request body:
 ```JSON
 {
-	"id_actividad":1;
+	"id_actividad":1
 }
 ```
 
