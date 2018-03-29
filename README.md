@@ -140,9 +140,9 @@ _Las actividades deben de ser filtradas por id_especialidad donde excluyan las q
 			"categoria": "Academica"
 		},{
 			"id": 3,
-			"nombre": Mapeando el ADN humano,
+			"nombre": "Mapeando el ADN humano",
 			"duracion": 3,
-			"material_participante": "Sangre, resistol 5000, Plutonio A15,
+			"material_participante": "Sangre, resistol 5000, Plutonio A15",
 			"descripcion":"lorem...",
 			"lugar":"Campo de futbol",
 			"fecha_hora": "2018/03/16 10:00:00",
