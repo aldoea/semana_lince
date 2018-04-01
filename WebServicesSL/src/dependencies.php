@@ -7,7 +7,7 @@ $container['db'] = function ($c) {
 
 	$user = $settings['user'];
 	$pass = $settings['pass'];
-	$dsn = $settings['driver'].':host='.$settings['host']."; dbname=".$settings['dbname'];
+	$dsn = $settings['driver'].':host='.$settings['host']."; dbname=".$settings['dbname']."; charset=".$settings['charset'];
 
 	try {
 		$pdo = new PDO($dsn, $user, $pass, array(PDO::ATTR_PERSISTENT=>TRUE));
@@ -18,4 +18,8 @@ $container['db'] = function ($c) {
 	}
 	
 	return $pdo;
+};
+
+$container["jwt"] = function($container) {
+	return new StdClass;
 };
