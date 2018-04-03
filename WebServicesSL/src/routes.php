@@ -45,7 +45,6 @@ $app->group('/api', function () use ($app) {
         });
 
 		$app->get('/actividad/especialidad/{id_especialidad:[0-9]+}', function ($request, $response) {
-
             $idEspecialidad = $request->getAttribute('id_especialidad');
             $stmt = $this->db->prepare("SELECT  act.id, 
                                                 act.nombre, 
@@ -73,7 +72,9 @@ $app->group('/api', function () use ($app) {
             $stmt->execute();
 
             if ($stmt->RowCount() > 0) 
-                $response = $response->withJson($stmt->fetchAll(), 200);
+                $response = $response->withJson(array('actividades'=>$stmt->fetchAll(),
+                                                      'num_actividades'=>$stmt->RowCount()),
+                                                       200);
              else 
                 $response = $response->withJson(array(
                     'message' => 'No existen actividades para la especialidad'
@@ -150,7 +151,9 @@ $app->group('/api', function () use ($app) {
             $stmt->execute();
             
             if($stmt->RowCount() > 0)
-                $response = $response->withJson($stmt->fetchAll(), 200);
+                $response = $response->withJson(array('actividades'=>$stmt->fetchAll(), 
+                                                      'num_actividades'=>$stmt->RowCount()),
+                                                       200);
             else
                 $response = $response->withJson(array(
                     'message' => 'No hay actividades inscritas con el numero de control especificado'
@@ -229,7 +232,7 @@ $app->group('/api', function () use ($app) {
                 'message'=>'Database Error: '.$e), 
                 200);
             }
-            
+
             return $response;
         });
 	});
