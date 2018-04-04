@@ -1,5 +1,5 @@
 -- DROP DATABASE lince;
-CREATE DATABASE lince;
+CREATE DATABASE IF NOT EXISTS lince;
 USE lince;
 
 CREATE TABLE IF NOT EXISTS servicio (
@@ -95,6 +95,7 @@ CREATE TABLE IF NOT EXISTS registro (
   FOREIGN KEY (id_alumno) REFERENCES alumno (id)
 );
 
+DROP TRIGGER IF EXISTS registro_qr;
 CREATE TRIGGER registro_qr
   BEFORE INSERT
   ON registro
@@ -107,3 +108,18 @@ CREATE TRIGGER registro_qr
     WHERE id = new.id_alumno;
     SET new.qr = to_base64(sha2(concat(nc, '|', new.id_horario, '$myl1ttl3p0ny'), 512));
   END;
+
+CREATE USER IF NOT EXISTS 'lincews'@'localhost'
+  IDENTIFIED BY 'aghGQ$fdknpt#0rhmt457490dgfj45052nb3mg1q0r';
+GRANT SELECT, INSERT, DELETE ON lince.registro TO 'lincews'@'localhost';
+GRANT SELECT ON lince.actividad TO 'lincews'@'localhost';
+GRANT SELECT ON lince.actividad_ponente TO 'lincews'@'localhost';
+GRANT SELECT ON lince.alumno TO 'lincews'@'localhost';
+GRANT SELECT ON lince.categoria TO 'lincews'@'localhost';
+GRANT SELECT ON lince.especialidad TO 'lincews'@'localhost';
+GRANT SELECT ON lince.horario TO 'lincews'@'localhost';
+GRANT SELECT ON lince.ponente TO 'lincews'@'localhost';
+GRANT SELECT ON lince.responsable TO 'lincews'@'localhost';
+GRANT SELECT ON lince.servicio TO 'lincews'@'localhost';
+GRANT SELECT ON lince.tipo TO 'lincews'@'localhost';
+GRANT SELECT ON lince.ubicacion TO 'lincews'@'localhost';

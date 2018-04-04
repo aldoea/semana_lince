@@ -1,3 +1,5 @@
+USE lince;
+
 INSERT INTO servicio (nombre) VALUES
   ('Interno'),
   ('Externo');
