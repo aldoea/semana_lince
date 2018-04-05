@@ -1,5 +1,6 @@
 -- DROP DATABASE lince;
-CREATE DATABASE IF NOT EXISTS lince;
+CREATE DATABASE IF NOT EXISTS lince
+  CHARSET utf8mb4;
 USE lince;
 
 CREATE TABLE IF NOT EXISTS servicio (
@@ -14,7 +15,7 @@ CREATE TABLE IF NOT EXISTS tipo (
 
 CREATE TABLE IF NOT EXISTS ubicacion (
   id     INT PRIMARY KEY AUTO_INCREMENT,
-  nombre VARCHAR(50) NOT NULL
+  nombre VARCHAR(64) NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS responsable (
@@ -35,13 +36,13 @@ CREATE TABLE IF NOT EXISTS especialidad (
 CREATE TABLE IF NOT EXISTS actividad (
   id                    BIGINT PRIMARY KEY AUTO_INCREMENT,
   nombre                VARCHAR(512) NOT NULL,
-  duracion              TIME         NOT NULL,
+  duracion              TIME,
   material_ponente      VARCHAR(512),
   material_participante VARCHAR(512),
   descripcion           TEXT,
   id_servicio           INT,
   id_tipo               INT,
-  id_especialidad       INT          NOT NULL,
+  id_especialidad       INT,
   id_responsable        INT,
   id_categoria          INT,
   FOREIGN KEY (id_servicio) REFERENCES servicio (id),
@@ -53,8 +54,7 @@ CREATE TABLE IF NOT EXISTS actividad (
 
 CREATE TABLE IF NOT EXISTS ponente (
   id     BIGINT PRIMARY KEY AUTO_INCREMENT,
-  nombre VARCHAR(255) NOT NULL,
-  rfc    CHAR(13)     NULL UNIQUE
+  nombre VARCHAR(255) NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS actividad_ponente (
@@ -66,11 +66,11 @@ CREATE TABLE IF NOT EXISTS actividad_ponente (
 );
 
 CREATE TABLE IF NOT EXISTS horario (
-  id           BIGINT   NOT NULL AUTO_INCREMENT,
-  id_actividad BIGINT   NOT NULL,
-  fecha_hora   DATETIME NOT NULL UNIQUE,
+  id           BIGINT NOT NULL  AUTO_INCREMENT,
+  id_actividad BIGINT NOT NULL,
+  fecha_hora   DATETIME,
   id_ubicacion INT,
-  capacidad    INT      NOT NULL,
+  capacidad    INT    NOT NULL,
   PRIMARY KEY (id, id_actividad, fecha_hora),
   FOREIGN KEY (id_actividad) REFERENCES actividad (id),
   FOREIGN KEY (id_ubicacion) REFERENCES ubicacion (id)
@@ -86,10 +86,10 @@ CREATE TABLE IF NOT EXISTS alumno (
 );
 
 CREATE TABLE IF NOT EXISTS registro (
-  id_horario BIGINT REFERENCES horario (id),
-  id_alumno  BIGINT REFERENCES alumno (id),
+  id_horario BIGINT NOT NULL,
+  id_alumno  BIGINT NOT NULL,
   qr         CHAR(174) UNIQUE,
-  asistencia BOOL NOT NULL DEFAULT FALSE,
+  asistencia BOOL   NOT NULL DEFAULT FALSE,
   PRIMARY KEY (id_horario, id_alumno),
   FOREIGN KEY (id_horario) REFERENCES horario (id),
   FOREIGN KEY (id_alumno) REFERENCES alumno (id)
@@ -106,7 +106,7 @@ CREATE TRIGGER registro_qr
     INTO nc
     FROM alumno
     WHERE id = new.id_alumno;
-    SET new.qr = to_base64(sha2(concat(nc, '|', new.id_horario, '$myl1ttl3p0ny'), 512));
+    SET new.qr = to_base64(sha2(concat('$myl1ttl3p0ny$', nc, '|', new.id_horario, '$fr13ndsh1p15m4g1c$'), 512));
   END;
 
 CREATE USER IF NOT EXISTS 'lincews'@'localhost'
