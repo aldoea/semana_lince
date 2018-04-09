@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS tipo (
 
 CREATE TABLE IF NOT EXISTS ubicacion (
   id     INT PRIMARY KEY AUTO_INCREMENT,
-  nombre VARCHAR(64) NOT NULL UNIQUE
+  nombre VARCHAR(190) NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS responsable (
@@ -35,8 +35,7 @@ CREATE TABLE IF NOT EXISTS especialidad (
 
 CREATE TABLE IF NOT EXISTS actividad (
   id                    BIGINT PRIMARY KEY AUTO_INCREMENT,
-  nombre                VARCHAR(512) NOT NULL,
-  duracion              TIME,
+  nombre                VARCHAR(512) NOT NULL,  
   material_ponente      VARCHAR(512),
   material_participante VARCHAR(512),
   descripcion           TEXT,
@@ -68,10 +67,12 @@ CREATE TABLE IF NOT EXISTS actividad_ponente (
 CREATE TABLE IF NOT EXISTS horario (
   id           BIGINT NOT NULL  AUTO_INCREMENT,
   id_actividad BIGINT NOT NULL,
-  fecha_hora   DATETIME,
+  fecha        DATE NOT NULL,
+  hora_inicio  TIME NOT NULL,
+  hora_final   TIME,
   id_ubicacion INT,
   capacidad    INT    NOT NULL,
-  PRIMARY KEY (id, id_actividad, fecha_hora),
+  PRIMARY KEY (id, id_actividad, fecha, hora_inicio),
   FOREIGN KEY (id_actividad) REFERENCES actividad (id),
   FOREIGN KEY (id_ubicacion) REFERENCES ubicacion (id)
 );

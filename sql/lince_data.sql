@@ -8,7 +8,9 @@ INSERT INTO tipo (nombre) VALUES
   ('Taller'),
   ('Conferencia'),
   ('Curso'),
+  ('Visita'),
   ('Actividad');
+
 
 INSERT INTO categoria (nombre) VALUES
   ('Academia'),
