@@ -1,4 +1,4 @@
--- DROP DATABASE lince;
+DROP DATABASE lince;
 CREATE DATABASE IF NOT EXISTS lince
   CHARSET utf8mb4;
 USE lince;
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS especialidad (
 
 CREATE TABLE IF NOT EXISTS actividad (
   id                    BIGINT PRIMARY KEY AUTO_INCREMENT,
-  nombre                VARCHAR(512) NOT NULL,  
+  nombre                VARCHAR(512) NOT NULL,
   material_ponente      VARCHAR(512),
   material_participante VARCHAR(512),
   descripcion           TEXT,
@@ -67,8 +67,8 @@ CREATE TABLE IF NOT EXISTS actividad_ponente (
 CREATE TABLE IF NOT EXISTS horario (
   id           BIGINT NOT NULL  AUTO_INCREMENT,
   id_actividad BIGINT NOT NULL,
-  fecha        DATE NOT NULL,
-  hora_inicio  TIME NOT NULL,
+  fecha        DATE   NOT NULL,
+  hora_inicio  TIME   NOT NULL,
   hora_final   TIME,
   id_ubicacion INT,
   capacidad    INT    NOT NULL,
@@ -113,6 +113,7 @@ CREATE TRIGGER registro_qr
 CREATE USER IF NOT EXISTS 'lincews'@'localhost'
   IDENTIFIED BY 'aghGQ$fdknpt#0rhmt457490dgfj45052nb3mg1q0r';
 GRANT SELECT, INSERT, DELETE ON lince.registro TO 'lincews'@'localhost';
+GRANT UPDATE (asistencia) ON lince.registro TO 'lincews'@'localhost';
 GRANT SELECT ON lince.actividad TO 'lincews'@'localhost';
 GRANT SELECT ON lince.actividad_ponente TO 'lincews'@'localhost';
 GRANT SELECT ON lince.alumno TO 'lincews'@'localhost';

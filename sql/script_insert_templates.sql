@@ -52,8 +52,8 @@ VALUES (num_actividad, (SELECT ponente.id
                         FROM ponente
                         WHERE ponente.nombre LIKE '%nombre_ponente%'));
 
-INSERT INTO horario (id_actividad, fecha_hora, id_ubicacion, capacidad)
-VALUES (num_actividad, 'fecha',
+INSERT INTO horario (id_actividad, fecha, hora_inicio, hora_final, id_ubicacion, capacidad)
+VALUES (num_actividad, 'fecha', 'hora_inicio', 'hora_final',
         (SELECT ubicacion.id
          FROM ubicacion
          WHERE ubicacion.nombre LIKE '%lugar%'),
