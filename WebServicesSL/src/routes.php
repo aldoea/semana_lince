@@ -165,12 +165,16 @@ $app->group('/api', function () use ($app) {
         $app->post('/actividad/alumno', function($request, $response) {
             $nocontrol = $request->getParsedBody()['nocontrol'];
             $id_actividad = $request->getParsedBody()['id_actividad'];
-            $fecha_hora = $request->getParsedBody()['fecha_hora'];
+            $fecha = $request->getParsedBody()['fecha'];
+            $hora_inicio = $request->getParsedBody()['hora_inicio'];
 
             $stmt = $this->db->prepare("SELECT id FROM horario 
-                                        WHERE fecha_hora = :fecha_hora AND id_actividad=:id_actividad");
+                                        WHERE fecha = :fecha 
+                                            AND hora_inicio = :hora_inicio 
+                                            AND id_actividad = :id_actividad");
 
-            $stmt->bindParam(':fecha_hora', $fecha_hora, PDO::PARAM_STR);
+            $stmt->bindParam(':fecha', $fecha, PDO::PARAM_STR);
+            $stmt->bindParam(':hora_inicio', $hora_inicio, PDO::PARAM_STR);
             $stmt->bindParam(':id_actividad', $id_actividad, PDO::PARAM_INT);
             $stmt->execute();
             
@@ -183,8 +187,8 @@ $app->group('/api', function () use ($app) {
                 if($stmt->RowCount() > 0){
                     $id_alumno = $stmt->fetchAll()[0]['id'];
                     try{
-                    $stmt = $this->db->prepare("INSERT INTO registro (id_alumno, id_horario, asistencia) 
-                                                VALUES (:id_alumno, :id_horario, 1)");
+                    $stmt = $this->db->prepare("INSERT INTO registro (id_alumno, id_horario) 
+                                                VALUES (:id_alumno, :id_horario)");
                     
                     $stmt->bindParam(':id_alumno', $id_alumno, PDO::PARAM_INT);
                     $stmt->bindParam(':id_horario', $id_horario, PDO::PARAM_INT);
