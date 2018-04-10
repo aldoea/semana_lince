@@ -44,11 +44,15 @@ Ejemplo request body:
 		"nombre":"Benito Juarez",
 		"id_especialidad":1
 	},
-	"message": "¡Bienvenido!"
+	"message": "¡Bienvenido!",
+	"token": "SUPER-SECRET-TOKEN",
+    "token_expiration": ...
 }
 ```
 
 Campo requerido: `no_control`
+
+El token retornado debe usarse para cualquier otro request con el header `Authorization` de HTTP (Bearer token)
 
 ### Lista de Actividades:
 _Las actividades deben de ser filtradas por id_especialidad donde excluyan las que correspondan al id_espcialidad del alumno_
@@ -60,24 +64,42 @@ _Las actividades deben de ser filtradas por id_especialidad donde excluyan las q
 {  
 	"actividades":[{
 			"id": 1,
-			"nombre": "Como cortar tu computadora",
-			"duracion": 2,
+			"nombre": "Como cortar tu computadora",			
 			"material_participante": "Computadora, tijeras",
 			"descripcion":"lorem...",
 			"lugar":"LCA",
-			"fecha_hora": "2018/03/15 10:00:00",
+			"horarios": [
+				{
+					"id_horario":1,
+					"fecha": "2018-03-15",
+					"hora_inicio": "10:00:00",
+					"hora_final": "12:00:00",
+				},
+				{
+					"id_horario":2,
+					"fecha": "2018-03-14",
+					"hora_inicio": "10:00:00",
+					"hora_final": "12:00:00",
+				}
+			],		
 			"id_responsable":1,
 			"nombre_responsable": "Francisco Ramos",
 			"id_categoria":1,
 			"categoria": "Academica"
 		},{
 			"id": 2,
-			"nombre": "Capturando ondas gravitatorias con un limon",
-			"duracion": 1,
+			"nombre": "Capturando ondas gravitatorias con un limon",			
 			"material_participante": "Acelerador de particulas, resilto 5000, Plutonio A15",
 			"descripcion":"lorem...",
 			"lugar":"Campo de futbol",
-			"fecha_hora": "2018/03/16 10:00:00",
+			"horarios": [
+				{
+					"id_horario":5,
+					"fecha": "2018-03-15",
+					"hora_inicio": "10:00:00",
+					"hora_final": "12:00:00",
+				},				
+			],
 			"id_responsable":1,
 			"nombre_responsable": "Stephen Hawkings",
 			"id_categoria":1,
@@ -96,12 +118,18 @@ _Las actividades deben de ser filtradas por id_especialidad donde excluyan las q
 {  
 	"actividad":{
 		"id": 1,
-		"nombre": "Como cortar tu computadora",
-		"duracion": 2,
+		"nombre": "Como cortar tu computadora",		
 		"material_participante": "Computadora, tijeras",
 		"descripcion":"lorem...",
 		"lugar":"LCA",
-		"fecha_hora": "2018/03/15 10:00:00",
+		"horarios": [
+			{
+				"id_horario":1,
+				"fecha": "2018-03-15",
+				"hora_inicio": "10:00:00",
+				"hora_final": "12:00:00",
+			}
+		],		
 		"id_responsable":1,
 		"nombre_responsable": "Francisco Ramos",
 		"id_categoria":1,
@@ -119,12 +147,14 @@ _Las actividades deben de ser filtradas por id_especialidad donde excluyan las q
 {  
 	"actividades":[{
 			"id": 1,
-			"nombre": "Como cortar tu computadora",
-			"duracion": 2,
+			"nombre": "Como cortar tu computadora",			
 			"material_participante": "Computadora, tijeras",
 			"descripcion":"lorem...",
 			"lugar":"LCA",
-			"fecha_hora": "2018/03/15 10:00:00",
+			"id_horario":1,
+			"fecha": "2018-03-15",
+			"hora_inicio": "10:00:00",
+			"hora_final": "12:00:00",
 			"id_responsable":1,
 			"nombre_responsable": "Francisco Ramos",
 			"id_categoria":1,
@@ -132,23 +162,27 @@ _Las actividades deben de ser filtradas por id_especialidad donde excluyan las q
 		},{
 			"id": 2,
 			"nombre": "Capturando ondas gravitatorias con un limon",
-			"duracion": 1,
 			"material_participante": "Acelerador de particulas, resistol 5000, Plutonio A15",
 			"descripcion":"lorem...",
 			"lugar":"Campo de futbol",
-			"fecha_hora": "2018/03/16 10:00:00",
+			"id_horario": 2,
+			"fecha": "2018-03-15",
+			"hora_inicio": "10:00:00",
+			"hora_final": "12:00:00",
 			"id_responsable":1,
 			"nombre_responsable": "Stephen Hawkings",
 			"id_categoria":1,
 			"categoria": "Academica"
 		},{
 			"id": 3,
-			"nombre": "Mapeando el ADN humano",
-			"duracion": 3,
+			"nombre": "Mapeando el ADN humano",			
 			"material_participante": "Sangre, resistol 5000, Plutonio A15",
 			"descripcion":"lorem...",
 			"lugar":"Campo de futbol",
-			"fecha_hora": "2018/03/16 10:00:00",
+			"id_horario": 3,
+			"fecha": "2018-03-15",
+			"hora_inicio": "10:00:00",
+			"hora_final": "12:00:00",
 			"id_responsable":1,
 			"nombre_responsable": "Luis Pasteur",
 			"id_categoria":1,
