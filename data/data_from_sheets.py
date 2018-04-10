@@ -6,6 +6,7 @@ import mysql.connector
 from mysql.connector import errorcode
 import time
 from DB import config
+import pprint
 
 
 def insert_ponente():
@@ -63,7 +64,7 @@ def insert_actividad():
 					descripcion = 'NULL' if actividad_data['descripcion'] == "PENDIENTE" else actividad_data['descripcion'].encode('utf-8'),
 					servicio = 'NULL' if actividad_data['servicio'] == '' else actividad_data['servicio'].encode('utf-8'),
 					tipo = 'NULL' if actividad_data['tipo'] == '' else actividad_data['tipo'].encode('utf-8'),
-					especialidad = 'NULL' if actividad_data['responsable'] == '' else actividad_data['responsable'].encode('utf-8'),
+					especialidad = 'Neutral' if actividad_data['responsable'] == '' else actividad_data['responsable'].encode('utf-8'),
 					responsable = actividad_data['responsable'].encode('utf-8'),
 					categoria = 'NULL' if actividad_data['categoria'] == '' else actividad_data['categoria'].encode('utf-8')
 			)	
@@ -160,11 +161,11 @@ try:
 	cursor.close()
 	cnx.close()
 except mysql.connector.Error as err:
-	if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-  		print("Something is wrong with your user name or password")
-  	elif err.errno == errorcode.ER_BAD_DB_ERROR:
-  		print("Database does not exist")
-  	else:
-  		print(err)
+        if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+            print("Something is wrong with your user name or password")
+        elif err.errno == errorcode.ER_BAD_DB_ERROR:
+            print("Database does not exist")
+        else:
+            print(err)
 else:
 	cnx.close()
