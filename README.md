@@ -58,12 +58,73 @@ El token retornado debe usarse para cualquier otro request con el header `Author
 _Las actividades deben de ser filtradas por id_especialidad donde excluyan las que correspondan al id_espcialidad del alumno_
 
 `GET /v1/actividad/especialidad/:id_especialidad`
+ 
+#### Returns:
+```JSON
+{  
+	"actividades":[{
+			"id": 1,
+			"id_tipo" : 1,
+			"tipo" : "Algo",
+			"nombre": "Como cortar tu computadora",			
+			"material_participante": "Computadora, tijeras",
+			"descripcion":"lorem...",
+			"lugar":"LCA",
+			"horarios": [
+				{
+					"id_horario":1,
+					"fecha": "2018-03-15",
+					"hora_inicio": "10:00:00",
+					"hora_final": "12:00:00",
+				},
+				{
+					"id_horario":2,
+					"fecha": "2018-03-14",
+					"hora_inicio": "10:00:00",
+					"hora_final": "12:00:00",
+				}
+			],		
+			"id_responsable":1,
+			"nombre_responsable": "Francisco Ramos",
+			"id_categoria":1,
+			"categoria": "Academica"
+		},{
+			"id": 2,
+			"nombre": "Capturando ondas gravitatorias con un limon",			
+			"material_participante": "Acelerador de particulas, resilto 5000, Plutonio A15",
+			"descripcion":"lorem...",
+			"lugar":"Campo de futbol",
+			"horarios": [
+				{
+					"id_horario":5,
+					"fecha": "2018-03-15",
+					"hora_inicio": "10:00:00",
+					"hora_final": "12:00:00",
+				},				
+			],
+			"id_responsable":1,
+			"nombre_responsable": "Stephen Hawkings",
+			"id_categoria":1,
+			"categoria": "Academica"
+		}
+		],
+	"num_actividades":2
+}
+```
+
+_Las actividades deben de ser filtradas por id_categoria_
+
+-> No debe requerir un token para consumirse
+
+`GET /v1/actividad/categoria/:id_categoria`
 
 #### Returns:
 ```JSON
 {  
 	"actividades":[{
 			"id": 1,
+			"id_tipo" : 1,
+			"tipo" : "Algo",
 			"nombre": "Como cortar tu computadora",			
 			"material_participante": "Computadora, tijeras",
 			"descripcion":"lorem...",
@@ -118,6 +179,8 @@ _Las actividades deben de ser filtradas por id_especialidad donde excluyan las q
 {  
 	"actividad":{
 		"id": 1,
+		"id_tipo" : 1,
+		"tipo" : "Algo",
 		"nombre": "Como cortar tu computadora",		
 		"material_participante": "Computadora, tijeras",
 		"descripcion":"lorem...",
@@ -196,6 +259,9 @@ _Las actividades deben de ser filtradas por id_especialidad donde excluyan las q
 
 `POST /v1/actividad/alumno`
 
+-> El alumno puede inscribir maximo 3 actividades
+-> Que los horarios de las actividades no se crucen
+
 Ejemplo request body:
 ```JSON
 {
@@ -224,3 +290,5 @@ Ejemplo request body:
 	"code":200
 }
 ```
+
+### 

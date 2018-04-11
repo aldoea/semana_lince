@@ -12,7 +12,6 @@ use Firebase\JWT\JWT;
 
 
 $app->group('/v1', function () use ($app) {
-
 	$app->post('/login', function ($request, $response) {
         $noControl = $request->getParsedBody()['no_control'];
 
@@ -24,7 +23,7 @@ $app->group('/v1', function () use ($app) {
         if ($stmt->RowCount() > 0) {
             #Generate token
             $now = new DateTime();
-            $expiration = new DateTime("+30 minutes"); #Stablish token expiration time 
+            $expiration = new DateTime("+60 minutes"); #Stablish token expiration time 
             $server = $request->getServerParams();
 
             $payload = [
@@ -63,48 +62,105 @@ $app->group('/v1', function () use ($app) {
     */
 
     /*
-    ___ ____ ___  ____ ____    _    ____ ____    ____ ____ ___ _ _  _ _ ___  ____ ___  ____ ____ 
-     |  |  | |  \ |__| [__     |    |__| [__     |__| |     |  | |  | | |  \ |__| |  \ |___ [__  
-     |  |__| |__/ |  | ___]    |___ |  | ___]    |  | |___  |  |  \/  | |__/ |  | |__/ |___ ___] 
-                                                                                                 
+    ____ ____ ___ _ _  _ _ ___  ____ ___  ____ ____    ___  ____ ____    ____ ____ ___  ____ ____ _ ____ _    _ ___  ____ ___  
+    |__| |     |  | |  | | |  \ |__| |  \ |___ [__     |__] |  | |__/    |___ [__  |__] |___ |    | |__| |    | |  \ |__| |  \ 
+    |  | |___  |  |  \/  | |__/ |  | |__/ |___ ___]    |    |__| |  \    |___ ___] |    |___ |___ | |  | |___ | |__/ |  | |__/ 
     */
 	$app->get('/actividad/especialidad/{id_especialidad:[0-9]+}', function ($request, $response) {
         $idEspecialidad = $request->getAttribute('id_especialidad');
         $stmt = $this->db->prepare("SELECT  act.id, 
+                                            t.id as id_tipo,
+                                            t.nombre as tipo,
                                             act.nombre, 
-                                            act.material_ponente, 
                                             act.material_participante, 
                                             act.descripcion, 
-                                            ubi.nombre as lugar,
-                                            hor.fecha,
-                                            hor.hora_inicio,
-                                            hor.hora_final,
                                             resp.id as id_responsable,
                                             resp.nombre as nombre_responsable,
                                             cat.id as id_categoria,
                                             cat.nombre as categoria
                                     FROM actividad act 
-                                        INNER JOIN horario hor
-                                             ON hor.id_actividad = act.id 
-                                        INNER JOIN ubicacion ubi
-                                             ON hor.id_ubicacion = ubi.id
                                         INNER JOIN responsable resp
                                              ON act.id_responsable = resp.id 
                                         INNER JOIN categoria cat 
                                             ON act.id_categoria = cat.id
+                                        INNER JOIN tipo t
+                                            ON act.id_tipo = t.id
                                     WHERE act.id_especialidad <> :id_especialidad");
         $stmt->bindParam(':id_especialidad', $idEspecialidad, PDO::PARAM_INT);
         $stmt->execute();
-
-        if ($stmt->RowCount() > 0) 
-            $response = $response->withJson(array('actividades'=>$stmt->fetchAll(),
-                                                  'num_actividades'=>$stmt->RowCount()),
+        $num_actividades = $stmt->RowCount();
+        
+        if ($num_actividades > 0) {
+            $data = $stmt->fetchAll();
+            foreach ($data as $key => $value) {
+                $stmt = $this->db->prepare("SELECT h.id as id_horario, fecha, hora_inicio, hora_final, u.nombre as lugar 
+                                            FROM horario h INNER JOIN ubicacion u
+                                                ON h.id_ubicacion = u.id 
+                                            WHERE id_actividad = :id_actividad");
+                $stmt->bindParam(':id_actividad', $data[$key]['id'], PDO::PARAM_INT);
+                $stmt->execute();
+                $data[$key]['horarios'] = $stmt->fetchAll();   
+            }
+            $response = $response->withJson(array('actividades'=>$data,
+                                                  'num_actividades'=>$num_actividades),
                                                    200);
-         else 
+        } else {
             $response = $response->withJson(array(
                 'message' => 'No existen actividades para la especialidad'
             ), 404);
+        }
+        return $response;
+    });
+
+    /*
+    ____ ____ ___ _ _  _ _ ___  ____ ___  ____ ____    ___  ____ ____    ____ ____ ___ ____ ____ ____ ____ _ ____ 
+    |__| |     |  | |  | | |  \ |__| |  \ |___ [__     |__] |  | |__/    |    |__|  |  |___ | __ |  | |__/ | |__| 
+    |  | |___  |  |  \/  | |__/ |  | |__/ |___ ___]    |    |__| |  \    |___ |  |  |  |___ |__] |__| |  \ | |  | 
+    */
+
+    $app->get('/actividad/categoria/{id_categoria:[0-9]+}', function ($request, $response) {
+        $idCategoria = $request->getAttribute('id_categoria');
+        $stmt = $this->db->prepare("SELECT  act.id, 
+                                            t.id as id_tipo,
+                                            t.nombre as tipo,
+                                            act.nombre, 
+                                            act.material_participante, 
+                                            act.descripcion, 
+                                            resp.id as id_responsable,
+                                            resp.nombre as nombre_responsable,
+                                            cat.id as id_categoria,
+                                            cat.nombre as categoria
+                                    FROM actividad act 
+                                        INNER JOIN responsable resp
+                                                ON act.id_responsable = resp.id 
+                                        INNER JOIN categoria cat 
+                                            ON act.id_categoria = cat.id
+                                        INNER JOIN tipo t
+                                            ON act.id_tipo = t.id
+                                    WHERE act.id_categoria =  :id_categoria");
+        $stmt->bindParam(':id_categoria', $idCategoria, PDO::PARAM_INT);
+        $stmt->execute();
+        $num_actividades = $stmt->RowCount();
         
+        if ($num_actividades > 0){
+            $data = $stmt->fetchAll();
+            foreach ($data as $key => $value) {
+                $stmt = $this->db->prepare("SELECT h.id as id_horario, fecha, hora_inicio, hora_final, u.nombre as lugar 
+                                            FROM horario h INNER JOIN ubicacion u
+                                                ON h.id_ubicacion = u.id 
+                                            WHERE id_actividad = :id_actividad");
+                $stmt->bindParam(':id_actividad', $data[$key]['id'], PDO::PARAM_INT);
+                $stmt->execute();
+                $data[$key]['horarios'] = $stmt->fetchAll();   
+            }
+            $response = $response->withJson(array('actividades'=>$data,
+                                                    'num_actividades'=>$num_actividades),
+                                                    200);
+        } else {  
+            $response = $response->withJson(array(
+                'message' => 'No existen actividades para la categoria'
+            ), 404);
+        }
         return $response;
     });
 
@@ -120,38 +176,41 @@ $app->group('/v1', function () use ($app) {
     $app->get('/actividad/{id_actividad:[0-9]+}', function($request, $response) {
         $id_actividad = $request->getAttribute('id_actividad');
         $stmt = $this->db->prepare("SELECT 	a.id,
+                                            t.id as id_tipo,
+                                            t.nombre as tipo,
                                             a.nombre,
                                             a.material_participante ,
                                             a.material_ponente ,
                                             a.descripcion ,
-                                            u.nombre as lugar,
-                                            h.fecha,
-                                            h.hora_inicio,
-                                            h.hora_final,
                                             r.id as id_responsable,
                                             r.nombre as nombre_responsable,
                                             c.id as id_categoria ,
                                             c.nombre as catergoria
                                     FROM 	actividad a
-                                            INNER JOIN horario h
-                                                ON h.id_actividad = a.id
-                                            INNER JOIN ubicacion u
-                                                ON h.id_ubicacion = u.id
                                             INNER JOIN responsable r
                                                 ON a.id_responsable = r.id
                                             INNER JOIN categoria c 
                                                 ON a.id_categoria = c.id
+                                            INNER JOIN tipo t
+                                                ON a.id_tipo = t.id
                                     WHERE a.id=:id_actividad");
         $stmt->bindParam(':id_actividad', $id_actividad, PDO::PARAM_INT);
         $stmt->execute();
-
-        if($stmt->RowCount() > 0)
-            $response = $response->withJson($stmt->fetchAll(), 200);
-        else
+        if($stmt->RowCount() > 0) {
+            $data = $stmt->fetchAll();
+            $stmt = $this->db->prepare("SELECT h.id as id_horario, fecha, hora_inicio, hora_final, u.nombre as lugar 
+                                        FROM horario h INNER JOIN ubicacion u
+                                            ON h.id_ubicacion = u.id 
+                                        WHERE id_actividad = :id_actividad");
+            $stmt->bindParam(':id_actividad', $data[0]['id'], PDO::PARAM_INT);
+            $stmt->execute();
+            $data[0]['horarios'] = $stmt->fetchAll();   
+            $response = $response->withJson($data, 200);
+        }else {
             $response = $response->withJson(array(
                 'message' => 'No existe una actividad con ese identificador'
             ), 404);
-
+        }
         return $response;
     });
 
@@ -178,6 +237,8 @@ $app->group('/v1', function () use ($app) {
         $nocontrol = $request->getAttribute('nocontrol');
         $stmt = $this->db->prepare("SELECT 	a.id,
                                             a.nombre,
+                                            t.id as id_tipo,
+                                            t.nombre as tipo, 
                                             a.material_participante ,
                                             a.descripcion ,
                                             u.nombre as lugar,
@@ -201,6 +262,8 @@ $app->group('/v1', function () use ($app) {
                                                 ON re.id_horario = h.id
                                             INNER JOIN alumno al 
                                                 ON re.id_alumno = al.id
+                                            INNER JOIN tipo t
+                                                ON a.id_tipo = t.id
                                     WHERE al.nocontrol = :nocontrol");
         $stmt->bindParam(':nocontrol', $nocontrol, PDO::PARAM_INT);
         $stmt->execute();
@@ -226,42 +289,87 @@ $app->group('/v1', function () use ($app) {
 
     $app->post('/actividad/alumno', function($request, $response) {
         $nocontrol = $request->getParsedBody()['nocontrol'];
-        $id_actividad = $request->getParsedBody()['id_actividad'];
-        $fecha = $request->getParsedBody()['fecha'];
-        $hora_inicio = $request->getParsedBody()['hora_inicio'];
+        $id_horario = $request->getParsedBody()['id_horario'];
+        #$fecha = $request->getParsedBody()['fecha'];
+        #$hora_inicio = $request->getParsedBody()['hora_inicio'];
 
-        $stmt = $this->db->prepare("SELECT id FROM horario 
-                                    WHERE fecha = :fecha 
-                                        AND hora_inicio = :hora_inicio 
-                                        AND id_actividad = :id_actividad");
+        $stmt = $this->db->prepare("SELECT id, fecha, hora_inicio, hora_final FROM horario 
+                                    WHERE id = :id_horario");
 
-        $stmt->bindParam(':fecha', $fecha, PDO::PARAM_STR);
-        $stmt->bindParam(':hora_inicio', $hora_inicio, PDO::PARAM_STR);
-        $stmt->bindParam(':id_actividad', $id_actividad, PDO::PARAM_INT);
+        $stmt->bindParam(':id_horario', $id_horario, PDO::PARAM_INT);
         $stmt->execute();
-        
+        $data_horario_a_insertar = $stmt->fetchAll();
+        $fecha_horario_a_insertar = $data_horario_a_insertar[0]['fecha'];
+        $horario_hora_inicio = strtotime($data_horario_a_insertar[0]['hora_inicio']);
+        $horario_hora_final = strtotime($data_horario_a_insertar[0]['hora_final']); 
         if($stmt->RowCount() > 0) {
-            $id_horario = $stmt->fetchAll()[0]['id'];
+            #$id_horario = $stmt->fetchAll()[0]['id'];
             $stmt = $this->db->prepare("SELECT id FROM alumno WHERE nocontrol=:nocontrol");
             $stmt->bindParam(':nocontrol', $nocontrol, PDO::PARAM_INT);
             $stmt->execute();
 
             if($stmt->RowCount() > 0){
                 $id_alumno = $stmt->fetchAll()[0]['id'];
-                try{
-                $stmt = $this->db->prepare("INSERT INTO registro (id_alumno, id_horario) 
-                                            VALUES (:id_alumno, :id_horario)");
-                
+                $stmt = $this->db->prepare("SELECT id_horario FROM registro WHERE id_alumno = :id_alumno");
                 $stmt->bindParam(':id_alumno', $id_alumno, PDO::PARAM_INT);
-                $stmt->bindParam(':id_horario', $id_horario, PDO::PARAM_INT);
                 $stmt->execute();
-                $response = $response->withJson(array('success' => true, 'code' => 200), 200);
-                }catch(PDOException $e){
-                    $response = $response->withJson(array('success' => false, 
-                                                    'code' => 200, 
-                                                    'message' => 'Database Error: Ya existe un registro para esta actividad'), 
-                                                     200);
-                }
+                $horario_cruzado = False;
+                if($stmt->RowCount() < 3) {
+                    if($stmt->RowCount() > 0) {
+                        $horarios_inscritos = $stmt->fetchAll();
+                        foreach($horarios_inscritos as $key => $value) {
+                            $stmt = $this->db->prepare("SELECT hora_inicio, hora_final FROM horario  WHERE id = :id_horario AND fecha = :fecha");
+                            
+                            $stmt->bindParam(':id_horario', $horarios_inscritos[$key]['id_horario'], PDO::PARAM_INT);
+                            $stmt->bindParam(':fecha', $fecha_horario_a_insertar, PDO::PARAM_STR);
+                            $stmt->execute();
+                            $data = $stmt->fetchAll();                            
+                            if($stmt->RowCount()>0){
+                                if($horario_hora_inicio <= strtotime($data[0]['hora_inicio']) &&
+                                $horario_hora_final  >  strtotime($data[0]['hora_inicio']) &&
+                                $horario_hora_final  <= strtotime($data[0]['hora_final'])){
+                                    $horario_cruzado = True;
+                                    break;
+                                }else{
+                                    if($horario_hora_inicio > strtotime($data[0]['hora_inicio']) &&
+                                    $horario_hora_inicio < strtotime($data[0]['hora_final']) &&
+                                    $horario_hora_final >= strtotime($data[0]['hora_final'])){
+                                        $horario_cruzado = True;
+                                        break;
+                                    }else{
+                                        if($horario_hora_inicio < strtotime($data[0]['hora_inicio']) &&
+                                            $horario_hora_final  > strtotime($data[0]['hora_final'])){
+                                                $horario_cruzado = True;
+                                                break;
+                                            }
+                                    }
+                                }
+                            } 
+                        }
+                    }
+                    if($horario_cruzado == False){
+                        try{
+                            $stmt = $this->db->prepare("INSERT INTO registro (id_alumno, id_horario) 
+                                                        VALUES (:id_alumno, :id_horario)");
+                            
+                            $stmt->bindParam(':id_alumno', $id_alumno, PDO::PARAM_INT);
+                            $stmt->bindParam(':id_horario', $id_horario, PDO::PARAM_INT);
+                            $stmt->execute();
+                            $response = $response->withJson(array('success' => true, 'code' => 200), 200);
+                        }catch(PDOException $e){
+                            $response = $response->withJson(array('success' => false, 
+                                                            'code' => 200, 
+                                                            'message' => 'Database Error: Ya existe un registro para esta actividad'), 
+                                                            200);
+                        }
+                    }else $response = $response->withJson(array('succes' => false,
+                                                                'code' => 200,
+                                                                'message' => 'No puedes inscribir esta actividad por que se cruza con otra.'),
+                                                                200); 
+                }else $response = $response->withJson(array('succes' => false,
+                                                            'code' => 200,
+                                                            'message' => 'Ya no puedes inscribir mas actividades (maximo 3)'),
+                                                            200);
 
             }else $response = $response->withJson(array('success' => false, 
                                                         'code' => 200, 
@@ -308,4 +416,6 @@ $app->group('/v1', function () use ($app) {
 
         return $response;
     });
+
+
 });
