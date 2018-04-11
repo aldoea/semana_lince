@@ -7,6 +7,7 @@ from mysql.connector import errorcode
 import time
 from DB import config
 import pprint
+import sys
 
 
 def insert_ponente():
@@ -14,7 +15,7 @@ def insert_ponente():
 	for actividad in actividad_rows:
 		ponente = actividad['nombre_ponentes']
 		if ponente != 'PENDIENTE' and ponente != '' and ponente is not None:
-			ponentes = ponente.split(',')	
+			ponentes = ponente.split(',')			
 			for person in ponentes:
 				try:
 					cursor.execute(query %(person))				
@@ -55,7 +56,6 @@ def insert_actividad():
 	
 	for actividad_data in actividad_rows:
 		if actividad_data['nombre_actividad'] != 'PENDIENTE' and actividad_data['nombre_actividad'] != '' and actividad_data['nombre_actividad'] is not None:
-			
 			new_query = query.format(
 					num_actividad = actividad_data['num_actividad'],
 					nombre_actividad = actividad_data['nombre_actividad'].encode('utf-8'),					
@@ -95,17 +95,16 @@ def insert_actividad_ponente():
 
 def insert_horario():
 	query = (
-				"INSERT INTO horario (id_actividad, fecha,hora_inicio, hora_final, id_ubicacion, capacidad)"
-				" VALUES ({num_actividad}, '{fecha}', '{hora_inicio}', '{hora_final}',"
+				"INSERT INTO horario (id_actividad, fecha,hora_inicio, id_ubicacion, capacidad)"
+				" VALUES ({num_actividad}, '{fecha}', '{hora_inicio}',"
 						"(SELECT ubicacion.id FROM ubicacion WHERE ubicacion.nombre = '{lugar}'), {capacidad});"
 	)
 	for horario in horarios_rows:
 		if horario['fecha'] != '' and horario['hora_inicio'] != '':
 			new_query = query.format(
 										num_actividad=horario['num_actividad'], 
-										fecha = time.strftime('%Y-%m-%d' ,time.strptime(horario['fecha'], '%Y-%m-%d') ),
-										hora_inicio = time.strftime('%H:%M:%S' ,time.strptime(horario['hora_inicio'], '%H:%M:%S')),
-										hora_final = ime.strftime('%H:%M:%S' ,time.strptime(horario['hora_inicio'], '%H:%M:%S')) if horario['hora_final'] == '' else time.strftime('%H:%M:%S' ,time.strptime(horario['hora_final'], '%H:%M:%S') ),
+										fecha = time.strftime('%Y/%m/%d' ,time.strptime(horario['fecha'], '%Y/%m/%d') ),
+										hora_inicio = time.strftime('%H:%M:%S' ,time.strptime(horario['hora_inicio'], '%H:%M:%S')),										
 										lugar = horario['lugar'] if isinstance(horario['lugar'], int) else horario['lugar'].encode('utf-8'), 
 										capacidad = 30 if horario['capacidad'] == '' else horario['capacidad']
 						)
@@ -120,7 +119,7 @@ scope = ['https://spreadsheets.google.com/feeds',
 creds = ServiceAccountCredentials.from_json_keyfile_name('client_secret.json', scope)
 client = gspread.authorize(creds)
 
-doc = client.open("semana_lince_app")
+doc = client.open("semana_lince_app-7.xlsx")
 activ = doc.worksheet("ACTIVIDADES")
 horarios = doc.worksheet("HORARIOS")
 
@@ -135,7 +134,7 @@ try:
 
 	print('=========================>	 P O N E N T E  L O G S 						<=========================')
 	print('')
-	insert_ponente()
+	insert_ponente()	
 	print('')
 	print('=========================>	 R E S P O N S A B L E  L O G S 				<=========================')
 	print('')
@@ -147,7 +146,7 @@ try:
 	print('')
 	print('=========================>	 A C T I V I D A D  L O G S 					<=========================')
 	print('')
-	insert_actividad()
+	insert_actividad()	
 	print('')
 	print('=========================>	 A C T I V I D A D _ P O N E N T E  L O G S 	<=========================')
 	print('')
