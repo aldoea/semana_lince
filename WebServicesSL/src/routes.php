@@ -47,7 +47,6 @@ $app->group('/v1', function () use ($app) {
                 'message' => 'Los datos son incorrectos, verifica e intente nuevamente'
             ), 200);
         }
-        
         return $response;
     });
 
@@ -99,7 +98,8 @@ $app->group('/v1', function () use ($app) {
                                             WHERE id_actividad = :id_actividad");
                 $stmt->bindParam(':id_actividad', $data[$key]['id'], PDO::PARAM_INT);
                 $stmt->execute();
-                $data[$key]['horarios'] = $stmt->fetchAll();   
+                $data[$key]['horarios'] = $stmt->fetchAll();
+                $data[$key]['imagen'] = getenv("IMAGE_PATH").$data[$key]['tipo'].".jpeg";   
             }
             $response = $response->withJson(array('actividades'=>$data,
                                                   'num_actividades'=>$num_actividades),
@@ -151,7 +151,8 @@ $app->group('/v1', function () use ($app) {
                                             WHERE id_actividad = :id_actividad");
                 $stmt->bindParam(':id_actividad', $data[$key]['id'], PDO::PARAM_INT);
                 $stmt->execute();
-                $data[$key]['horarios'] = $stmt->fetchAll();   
+                $data[$key]['horarios'] = $stmt->fetchAll(); 
+                $data[$key]['imagen'] = getenv("IMAGE_PATH").$data[$key]['tipo'].".jpeg";  
             }
             $response = $response->withJson(array('actividades'=>$data,
                                                     'num_actividades'=>$num_actividades),
@@ -161,6 +162,59 @@ $app->group('/v1', function () use ($app) {
                 'message' => 'No existen actividades para la categoria'
             ), 404);
         }
+        return $response;
+    });
+
+    $app->get('/actividad/categoria/', function ($request, $response) {
+        $stmt = $this->db->prepare("SELECT id, nombre FROM categoria");
+        $stmt->execute();
+        $categorias = $stmt->fetchAll();
+        $response_data = array(); 
+        foreach($categorias as $key => $value) {
+            $stmt = $this->db->prepare("SELECT  act.id, 
+                                                t.id as id_tipo,
+                                                t.nombre as tipo,
+                                                act.nombre, 
+                                                act.material_participante, 
+                                                act.descripcion, 
+                                                resp.id as id_responsable,
+                                                resp.nombre as nombre_responsable,
+                                                cat.id as id_categoria,
+                                                cat.nombre as categoria
+                                        FROM actividad act 
+                                            INNER JOIN responsable resp
+                                                    ON act.id_responsable = resp.id 
+                                            INNER JOIN categoria cat 
+                                                ON act.id_categoria = cat.id
+                                            INNER JOIN tipo t
+                                                ON act.id_tipo = t.id
+                                        WHERE act.id_categoria = :id_categoria");
+            
+            $stmt->bindParam(':id_categoria', $categorias[$key]['id'], PDO::PARAM_INT);
+            $stmt->execute();
+            if($stmt->RowCount()>0) {
+                $data = $stmt->fetchAll();
+                foreach ($data as $k => $value) {
+                    $stmt = $this->db->prepare("SELECT h.id as id_horario, fecha, hora_inicio, hora_final, u.nombre as lugar 
+                                                FROM horario h INNER JOIN ubicacion u
+                                                    ON h.id_ubicacion = u.id 
+                                                WHERE id_actividad = :id_actividad");
+                    $stmt->bindParam(':id_actividad', $data[$k]['id'], PDO::PARAM_INT);
+                    $stmt->execute();
+                    $data[$k]['horarios'] = $stmt->fetchAll();   
+                    $data[$key]['imagen'] = getenv("IMAGE_PATH").$data[$key]['tipo'].".jpeg";
+                }
+                array_push($response_data, array("nombre" => $categorias[$key]['nombre'], 
+                                                 "actividades" => $data));   
+            }
+        }
+        if(count($response_data)>0)
+            $response = $response->withJson($response_data, 200);
+        else   
+            $response = $response->withJson(array(
+                'message' => 'No existen actividades'
+            ), 404);
+        
         return $response;
     });
 
@@ -204,7 +258,8 @@ $app->group('/v1', function () use ($app) {
                                         WHERE id_actividad = :id_actividad");
             $stmt->bindParam(':id_actividad', $data[0]['id'], PDO::PARAM_INT);
             $stmt->execute();
-            $data[0]['horarios'] = $stmt->fetchAll();   
+            $data[0]['horarios'] = $stmt->fetchAll();
+            $data[$key]['imagen'] = getenv("IMAGE_PATH").$data[$key]['tipo'].".jpeg";   
             $response = $response->withJson($data, 200);
         }else {
             $response = $response->withJson(array(
@@ -290,8 +345,23 @@ $app->group('/v1', function () use ($app) {
     $app->post('/actividad/alumno', function($request, $response) {
         $nocontrol = $request->getParsedBody()['nocontrol'];
         $id_horario = $request->getParsedBody()['id_horario'];
-        #$fecha = $request->getParsedBody()['fecha'];
-        #$hora_inicio = $request->getParsedBody()['hora_inicio'];
+
+        $stmt = $this->db->prepare("SELECT r.id_horario as id_horario, h.capacidad as capacidad 
+                                    FROM registro r JOIN horario h
+                                        ON r.id_horario = h.id 
+                                    WHERE id_horario = :id_horario");
+        $stmt->bindParam(':id_horario', $id_horario);
+        $stmt->execute();
+        $inscritos = $stmt->RowCount();
+        if($inscritos>0){
+            if(($inscritos<$stmt->fetchAll()[0]['capacidad'])!=True) {
+                $response = $response->withJson(array('success' => false, 
+                                                      'code'    => 406, 
+                                                      'message' => 'Ya no hay cupo para esta actividad'), 
+                                                       406);
+                return $response;
+            }
+        }
 
         $stmt = $this->db->prepare("SELECT id, fecha, hora_inicio, hora_final FROM horario 
                                     WHERE id = :id_horario");
@@ -303,7 +373,6 @@ $app->group('/v1', function () use ($app) {
         $horario_hora_inicio = strtotime($data_horario_a_insertar[0]['hora_inicio']);
         $horario_hora_final = strtotime($data_horario_a_insertar[0]['hora_final']); 
         if($stmt->RowCount() > 0) {
-            #$id_horario = $stmt->fetchAll()[0]['id'];
             $stmt = $this->db->prepare("SELECT id FROM alumno WHERE nocontrol=:nocontrol");
             $stmt->bindParam(':nocontrol', $nocontrol, PDO::PARAM_INT);
             $stmt->execute();
@@ -336,7 +405,7 @@ $app->group('/v1', function () use ($app) {
                                     $horario_hora_final >= strtotime($data[0]['hora_final'])){
                                         $horario_cruzado = True;
                                         break;
-                                    }else{
+                                    }else {
                                         if($horario_hora_inicio < strtotime($data[0]['hora_inicio']) &&
                                             $horario_hora_final  > strtotime($data[0]['hora_final'])){
                                                 $horario_cruzado = True;
@@ -358,28 +427,28 @@ $app->group('/v1', function () use ($app) {
                             $response = $response->withJson(array('success' => true, 'code' => 200), 200);
                         }catch(PDOException $e){
                             $response = $response->withJson(array('success' => false, 
-                                                            'code' => 200, 
+                                                            'code' => 500, 
                                                             'message' => 'Database Error: Ya existe un registro para esta actividad'), 
-                                                            200);
+                                                            500);
                         }
                     }else $response = $response->withJson(array('succes' => false,
-                                                                'code' => 200,
+                                                                'code' => 406,
                                                                 'message' => 'No puedes inscribir esta actividad por que se cruza con otra.'),
-                                                                200); 
+                                                                406); 
                 }else $response = $response->withJson(array('succes' => false,
-                                                            'code' => 200,
+                                                            'code' => 406,
                                                             'message' => 'Ya no puedes inscribir mas actividades (maximo 3)'),
-                                                            200);
+                                                            406);
 
             }else $response = $response->withJson(array('success' => false, 
-                                                        'code' => 200, 
+                                                        'code' => 406, 
                                                         'message' => 'Alumno no encontrado'), 
-                                                         200);
+                                                         406);
 
         }else $response = $response->withJson(array('success' => false, 
-                                                    'code' => 200, 
+                                                    'code' => 406, 
                                                     'message' => 'Horario no encontrado'), 
-                                                     200);
+                                                     406);
         
         return $response;
     });
@@ -404,18 +473,16 @@ $app->group('/v1', function () use ($app) {
                 $response = $response->withJson(array('success'=>true, 'code'=>200), 200);
             else
                 $response = $response->withJson(array('success'=>false, 
-                'code'=>200, 
+                'code'=>406, 
                 'message'=>'Error: El registro no existe'), 
-                200);
+                406);
         }catch(PDOException $e){
             $response = $response->withJson(array('success'=>false, 
-            'code'=>200, 
+            'code'=>500, 
             'message'=>'Database Error: '.$e), 
-            200);
+            500);
         }
-
         return $response;
     });
-
 
 });

@@ -58,7 +58,7 @@ El token retornado debe usarse para cualquier otro request con el header `Author
 _Las actividades deben de ser filtradas por id_especialidad donde excluyan las que correspondan al id_espcialidad del alumno_
 
 `GET /v1/actividad/especialidad/:id_especialidad`
- 
+
 #### Returns:
 ```JSON
 {  
@@ -69,19 +69,20 @@ _Las actividades deben de ser filtradas por id_especialidad donde excluyan las q
 			"nombre": "Como cortar tu computadora",			
 			"material_participante": "Computadora, tijeras",
 			"descripcion":"lorem...",
-			"lugar":"LCA",
 			"horarios": [
 				{
 					"id_horario":1,
 					"fecha": "2018-03-15",
 					"hora_inicio": "10:00:00",
 					"hora_final": "12:00:00",
+                    "lugar":"LCA"
 				},
 				{
 					"id_horario":2,
 					"fecha": "2018-03-14",
 					"hora_inicio": "10:00:00",
 					"hora_final": "12:00:00",
+                    "lugar":"LCA"
 				}
 			],		
 			"id_responsable":1,
@@ -93,14 +94,14 @@ _Las actividades deben de ser filtradas por id_especialidad donde excluyan las q
 			"nombre": "Capturando ondas gravitatorias con un limon",			
 			"material_participante": "Acelerador de particulas, resilto 5000, Plutonio A15",
 			"descripcion":"lorem...",
-			"lugar":"Campo de futbol",
 			"horarios": [
 				{
 					"id_horario":5,
 					"fecha": "2018-03-15",
 					"hora_inicio": "10:00:00",
 					"hora_final": "12:00:00",
-				},				
+					"lugar":"Campo de futbol"
+                },				
 			],
 			"id_responsable":1,
 			"nombre_responsable": "Stephen Hawkings",
@@ -112,9 +113,114 @@ _Las actividades deben de ser filtradas por id_especialidad donde excluyan las q
 }
 ```
 
+_Todas las actividades agrupadas por su categoria_
+
+`GET /v1/actividad/categoria`
+
+#### Returns:
+
+```json
+[
+    {
+        "nombre": "Academia",
+        "actividades": [
+            {
+                "id": "2",
+                "id_tipo": "1",
+                "tipo": "Taller",
+                "nombre": "Capturando ondas gravitatorias con un limon",
+                "material_participante": "Acelerador de particulas, resilto 5000, Plutonio A15",
+                "descripcion": "lorem...",
+                "id_responsable": "1",
+                "nombre_responsable": "Responsable 1",
+                "id_categoria": "1",
+                "categoria": "Academia",
+                "horarios": [
+                    {
+                        "id_horario": "2",
+                        "fecha": "2018-03-15",
+                        "hora_inicio": "09:00:00",
+                        "hora_final": "10:00:00",
+                        "lugar": "Ubicacion1"
+                    }
+                ]
+            },
+            {
+                "id": "3",
+                "id_tipo": "1",
+                "tipo": "Taller",
+                "nombre": "Actividad ejemplo",
+                "material_participante": "Material ejemplo",
+                "descripcion": "lorem...",
+                "id_responsable": "1",
+                "nombre_responsable": "Responsable 1",
+                "id_categoria": "1",
+                "categoria": "Academia",
+                "horarios": [
+                    {
+                        "id_horario": "3",
+                        "fecha": "2018-03-15",
+                        "hora_inicio": "12:00:00",
+                        "hora_final": "14:00:00",
+                        "lugar": "Ubicacion1"
+                    }
+                ]
+            },
+            {
+                "id": "4",
+                "id_tipo": "1",
+                "tipo": "Taller",
+                "nombre": "Como cocinar un pastel",
+                "material_participante": "Harina y huevos",
+                "descripcion": "lorem...",
+                "id_responsable": "1",
+                "nombre_responsable": "Responsable 1",
+                "id_categoria": "1",
+                "categoria": "Academia",
+                "horarios": [
+                    {
+                        "id_horario": "4",
+                        "fecha": "2018-03-15",
+                        "hora_inicio": "09:00:00",
+                        "hora_final": "11:00:00",
+                        "lugar": "Ubicacion1"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nombre": "Empresas",
+        "actividades": [
+            {
+                "id": "1",
+                "id_tipo": "1",
+                "tipo": "Taller",
+                "nombre": "Como cortar tu computadora",
+                "material_participante": "Computadora, tijeras",
+                "descripcion": "lorem..",
+                "id_responsable": "1",
+                "nombre_responsable": "Responsable 1",
+                "id_categoria": "2",
+                "categoria": "Empresas",
+                "horarios": [
+                    {
+                        "id_horario": "1",
+                        "fecha": "2018-03-15",
+                        "hora_inicio": "10:00:00",
+                        "hora_final": "12:00:00",
+                        "lugar": "Ubicacion1"
+                    }
+                ]
+            }
+        ]
+    }
+]
+```
+
 _Las actividades deben de ser filtradas por id_categoria_
 
--> No debe requerir un token para consumirse
+- No debe requerir un token para consumirse
 
 `GET /v1/actividad/categoria/:id_categoria`
 
@@ -128,19 +234,20 @@ _Las actividades deben de ser filtradas por id_categoria_
 			"nombre": "Como cortar tu computadora",			
 			"material_participante": "Computadora, tijeras",
 			"descripcion":"lorem...",
-			"lugar":"LCA",
 			"horarios": [
 				{
 					"id_horario":1,
 					"fecha": "2018-03-15",
 					"hora_inicio": "10:00:00",
 					"hora_final": "12:00:00",
+                    "lugar":"LCA",
 				},
 				{
 					"id_horario":2,
 					"fecha": "2018-03-14",
 					"hora_inicio": "10:00:00",
 					"hora_final": "12:00:00",
+                    "lugar":"LCA"
 				}
 			],		
 			"id_responsable":1,
@@ -159,6 +266,7 @@ _Las actividades deben de ser filtradas por id_categoria_
 					"fecha": "2018-03-15",
 					"hora_inicio": "10:00:00",
 					"hora_final": "12:00:00",
+                    "lugar":"LCA"
 				},				
 			],
 			"id_responsable":1,
@@ -184,13 +292,13 @@ _Las actividades deben de ser filtradas por id_categoria_
 		"nombre": "Como cortar tu computadora",		
 		"material_participante": "Computadora, tijeras",
 		"descripcion":"lorem...",
-		"lugar":"LCA",
-		"horarios": [
+        "horarios": [
 			{
 				"id_horario":1,
 				"fecha": "2018-03-15",
 				"hora_inicio": "10:00:00",
 				"hora_final": "12:00:00",
+                "lugar":"LCA"
 			}
 		],		
 		"id_responsable":1,
@@ -259,8 +367,8 @@ _Las actividades deben de ser filtradas por id_categoria_
 
 `POST /v1/actividad/alumno`
 
--> El alumno puede inscribir maximo 3 actividades
--> Que los horarios de las actividades no se crucen
+- El alumno puede inscribir maximo 3 actividades
+- Que los horarios de las actividades no se crucen
 
 Ejemplo request body:
 ```JSON
