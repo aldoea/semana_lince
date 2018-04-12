@@ -65,6 +65,9 @@ $app->group('/v1', function () use ($app) {
     |__| |     |  | |  | | |  \ |__| |  \ |___ [__     |__] |  | |__/    |___ [__  |__] |___ |    | |__| |    | |  \ |__| |  \ 
     |  | |___  |  |  \/  | |__/ |  | |__/ |___ ___]    |    |__| |  \    |___ ___] |    |___ |___ | |  | |___ | |__/ |  | |__/ 
     */
+    /**
+     * No requiere autenticacion
+     */
 	$app->get('/actividad/especialidad/{id_especialidad:[0-9]+}', function ($request, $response) {
         $idEspecialidad = $request->getAttribute('id_especialidad');
         $stmt = $this->db->prepare("SELECT  act.id, 
@@ -117,7 +120,9 @@ $app->group('/v1', function () use ($app) {
     |__| |     |  | |  | | |  \ |__| |  \ |___ [__     |__] |  | |__/    |    |__|  |  |___ | __ |  | |__/ | |__| 
     |  | |___  |  |  \/  | |__/ |  | |__/ |___ ___]    |    |__| |  \    |___ |  |  |  |___ |__] |__| |  \ | |  | 
     */
-
+    /**
+     * No requiere autenticacion
+     */
     $app->get('/actividad/categoria/{id_categoria:[0-9]+}', function ($request, $response) {
         $idCategoria = $request->getAttribute('id_categoria');
         $stmt = $this->db->prepare("SELECT  act.id, 
@@ -165,36 +170,62 @@ $app->group('/v1', function () use ($app) {
         return $response;
     });
 
-    $app->get('/actividad/categoria/', function ($request, $response) {
+    /**
+     * Todas las actividades agrupadas por categoria
+     * No requiere autenticacion
+     */
+    $app->get('/actividad/especialidad/{id_especialidad:[0-9]+}/categoria', function ($request, $response) {
+        $idEspecialidad = $request->getAttribute('id_especialidad');
+        if($idEspecialidad==0)
+          $query = "SELECT  act.id, 
+                            t.id as id_tipo,
+                            t.nombre as tipo,
+                            act.nombre, 
+                            act.material_participante, 
+                            act.descripcion, 
+                            resp.id as id_responsable,
+                            resp.nombre as nombre_responsable,
+                            cat.id as id_categoria,
+                            cat.nombre as categoria
+                            FROM actividad act 
+                                INNER JOIN responsable resp
+                                        ON act.id_responsable = resp.id 
+                                INNER JOIN categoria cat 
+                                    ON act.id_categoria = cat.id
+                                INNER JOIN tipo t
+                                    ON act.id_tipo = t.id
+                            WHERE act.id_categoria = :id_categoria"; 
+        else
+            $query = "SELECT  act.id, 
+                            t.id as id_tipo,
+                            t.nombre as tipo,
+                            act.nombre, 
+                            act.material_participante, 
+                            act.descripcion, 
+                            resp.id as id_responsable,
+                            resp.nombre as nombre_responsable,
+                            cat.id as id_categoria,
+                            cat.nombre as categoria
+                            FROM actividad act 
+                                INNER JOIN responsable resp
+                                        ON act.id_responsable = resp.id 
+                                INNER JOIN categoria cat 
+                                    ON act.id_categoria = cat.id
+                                INNER JOIN tipo t
+                                    ON act.id_tipo = t.id
+                            WHERE act.id_categoria = :id_categoria AND id_especialidad <> :id_especialidad";
         $stmt = $this->db->prepare("SELECT id, nombre FROM categoria");
         $stmt->execute();
         $categorias = $stmt->fetchAll();
         $response_data = array(); 
         foreach($categorias as $key => $value) {
-            $stmt = $this->db->prepare("SELECT  act.id, 
-                                                t.id as id_tipo,
-                                                t.nombre as tipo,
-                                                act.nombre, 
-                                                act.material_participante, 
-                                                act.descripcion, 
-                                                resp.id as id_responsable,
-                                                resp.nombre as nombre_responsable,
-                                                cat.id as id_categoria,
-                                                cat.nombre as categoria
-                                        FROM actividad act 
-                                            INNER JOIN responsable resp
-                                                    ON act.id_responsable = resp.id 
-                                            INNER JOIN categoria cat 
-                                                ON act.id_categoria = cat.id
-                                            INNER JOIN tipo t
-                                                ON act.id_tipo = t.id
-                                        WHERE act.id_categoria = :id_categoria");
-            
+            $stmt = $this->db->prepare($query);
+            if($idEspecialidad!=0)
+                $stmt->bindParam(':id_especialidad', $idEspecialidad, PDO::PARAM_INT);
             $stmt->bindParam(':id_categoria', $categorias[$key]['id'], PDO::PARAM_INT);
             $stmt->execute();
             if($stmt->RowCount()>0) {
                 $data = $stmt->fetchAll();
-                #print_r($data);die();
                 foreach ($data as $k => $value) {
                     $stmt = $this->db->prepare("SELECT h.id as id_horario, fecha, hora_inicio, hora_final, u.nombre as lugar 
                                                 FROM horario h INNER JOIN ubicacion u
@@ -219,14 +250,11 @@ $app->group('/v1', function () use ($app) {
     });
 
     /*
-        
     _  _ _  _ ____    ____ ____ ___ _ _  _ _ ___  ____ ___  
     |  | |\ | |__|    |__| |     |  | |  | | |  \ |__| |  \ 
     |__| | \| |  |    |  | |___  |  |  \/  | |__/ |  | |__/ 
-                                                            
-
     */
-
+    
     $app->get('/actividad/{id_actividad:[0-9]+}', function($request, $response) {
         $id_actividad = $request->getAttribute('id_actividad');
         $stmt = $this->db->prepare("SELECT 	a.id,
@@ -259,7 +287,7 @@ $app->group('/v1', function () use ($app) {
             $stmt->bindParam(':id_actividad', $data[0]['id'], PDO::PARAM_INT);
             $stmt->execute();
             $data[0]['horarios'] = $stmt->fetchAll();
-            $data[$key]['imagen'] = getenv("IMAGE_PATH").$data[$key]['tipo'].".jpeg";   
+            $data[0]['imagen'] = getenv("IMAGE_PATH").$data[0]['tipo'].".jpeg";   
             $response = $response->withJson($data, 200);
         }else {
             $response = $response->withJson(array(
@@ -419,7 +447,7 @@ $app->group('/v1', function () use ($app) {
                             } 
                         }
                     }
-                    if($horario_cruzado == False){
+                    if($horario_cruzado == False) {
                         try{
                             $stmt = $this->db->prepare("INSERT INTO registro (id_alumno, id_horario) 
                                                         VALUES (:id_alumno, :id_horario)");
@@ -487,5 +515,4 @@ $app->group('/v1', function () use ($app) {
         }
         return $response;
     });
-
 });
