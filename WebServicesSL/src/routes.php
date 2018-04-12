@@ -102,7 +102,7 @@ $app->group('/v1', function () use ($app) {
                 $stmt->bindParam(':id_actividad', $data[$key]['id'], PDO::PARAM_INT);
                 $stmt->execute();
                 $data[$key]['horarios'] = $stmt->fetchAll();
-                $data[$key]['imagen'] = getenv("IMAGE_PATH").$data[$key]['tipo'].".jpeg";   
+                $data[$key]['imagen'] = getenv("IMAGE_PATH").strtolower($data[$key]['tipo']).".jpg";   
             }
             $response = $response->withJson(array('actividades'=>$data,
                                                   'num_actividades'=>$num_actividades),
@@ -157,7 +157,7 @@ $app->group('/v1', function () use ($app) {
                 $stmt->bindParam(':id_actividad', $data[$key]['id'], PDO::PARAM_INT);
                 $stmt->execute();
                 $data[$key]['horarios'] = $stmt->fetchAll(); 
-                $data[$key]['imagen'] = getenv("IMAGE_PATH").$data[$key]['tipo'].".jpeg";  
+                $data[$key]['imagen'] = getenv("IMAGE_PATH").strtolower($data[$key]['tipo']).".jpg";  
             }
             $response = $response->withJson(array('actividades'=>$data,
                                                     'num_actividades'=>$num_actividades),
@@ -234,7 +234,7 @@ $app->group('/v1', function () use ($app) {
                     $stmt->bindParam(':id_actividad', $data[$k]['id'], PDO::PARAM_INT);
                     $stmt->execute();
                     $data[$k]['horarios'] = $stmt->fetchAll();   
-                    $data[$k]['imagen'] = getenv("IMAGE_PATH").$data[$k]['tipo'].".jpeg";
+                    $data[$k]['imagen'] = getenv("IMAGE_PATH").strtolower($data[$k]['tipo']).".jpg";
                 }
                 array_push($response_data, array("nombre" => $categorias[$key]['nombre'], "actividades" => $data));   
             }
@@ -287,7 +287,11 @@ $app->group('/v1', function () use ($app) {
             $stmt->bindParam(':id_actividad', $data[0]['id'], PDO::PARAM_INT);
             $stmt->execute();
             $data[0]['horarios'] = $stmt->fetchAll();
-            $data[0]['imagen'] = getenv("IMAGE_PATH").$data[0]['tipo'].".jpeg";   
+<<<<<<< HEAD
+            $data[0]['imagen'] = getenv("IMAGE_PATH").strtolower($data[0]['tipo']).".jpeg";   
+=======
+            $data[$key]['imagen'] = getenv("IMAGE_PATH").strtolower($data[$key]['tipo']).".jpg";   
+>>>>>>> e71b659bd827fccf2039ce695dbf7a9c09726c20
             $response = $response->withJson($data, 200);
         }else {
             $response = $response->withJson(array(
@@ -352,7 +356,7 @@ $app->group('/v1', function () use ($app) {
         $stmt->execute();
         $data = $stmt->fetchAll();
         foreach($data as $key => $value) {
-            $data[$key]['imagen'] = getenv("IMAGE_PATH").$data[$key]['tipo'].".jpeg";
+            $data[$key]['imagen'] = getenv("IMAGE_PATH").strtolower($data[$key]['tipo']).".jpg";
         }
         if($stmt->RowCount() > 0)
             $response = $response->withJson(array('actividades'=>$data, 

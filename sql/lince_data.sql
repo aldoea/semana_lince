@@ -20,6 +20,7 @@ INSERT INTO categoria (nombre) VALUES
   ('Desarrollo Personal');
 
 INSERT INTO especialidad (id, nombre) VALUES
+  (0, 'Ninguna'),
   (1, 'Ingeniería Ambiental'),
   (2, 'Ingeniería Mecatrónica'),
   (3, 'Ingeniería Bioquímica'),
