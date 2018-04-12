@@ -10,11 +10,7 @@
 
 ### Primero instalar los modulos necesarios
 	
-	pip install gspread oauth2client
-
-y tambien para conectarse a la base de datos
-
-	pip install mysql-connector
+	pip install -r requirements.txt
 
 #### _Recuerda que el archivo client_secret.json son las credenciales creadas en la consola de Google APIs_
 
