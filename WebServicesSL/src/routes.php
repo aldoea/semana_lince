@@ -147,7 +147,7 @@ $app->group('/v1', function () use ($app) {
         $stmt->execute();
         $num_actividades = $stmt->RowCount();
         
-        if ($num_actividades > 0){
+        if ($num_actividades > 0) {
             $data = $stmt->fetchAll();
             foreach ($data as $key => $value) {
                 $stmt = $this->db->prepare("SELECT h.id as id_horario, fecha, hora_inicio, hora_final, u.nombre as lugar 
@@ -287,11 +287,7 @@ $app->group('/v1', function () use ($app) {
             $stmt->bindParam(':id_actividad', $data[0]['id'], PDO::PARAM_INT);
             $stmt->execute();
             $data[0]['horarios'] = $stmt->fetchAll();
-<<<<<<< HEAD
             $data[0]['imagen'] = getenv("IMAGE_PATH").strtolower($data[0]['tipo']).".jpeg";   
-=======
-            $data[$key]['imagen'] = getenv("IMAGE_PATH").strtolower($data[$key]['tipo']).".jpg";   
->>>>>>> e71b659bd827fccf2039ce695dbf7a9c09726c20
             $response = $response->withJson($data, 200);
         }else {
             $response = $response->withJson(array(
