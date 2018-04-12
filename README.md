@@ -22,11 +22,11 @@ _Nota: Si se desea que el sitio web o los servicios web estén disponibles desde
 ## API ENDPOINTS:
 
 El nombre de dominio es: ``api.semanalince.itcelaya.edu.mx``
-Ejemplo: api.semanalince.itcelaya.edu.mx/api/v1/login
+Ejemplo: api.semanalince.itcelaya.edu.mx/v1/login
 
 ### Autenticación:
 
-`POST /api/v1/login`
+`POST /v1/login`
 
 Ejemplo request body:
 ```JSON

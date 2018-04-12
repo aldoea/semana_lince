@@ -1,7 +1,7 @@
 # Comiendo data desde los archivos de google docs :+1: :metal: :octocat:
 
 ## Requerimientos:
-* Python 3
+* Python ~2.7
 * Google API console (Credentials (JSON))
 * [Obtain OAuth2 credentials from Google Developers Console](http://gspread.readthedocs.org/en/latest/oauth2.html)
 

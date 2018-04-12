@@ -1,0 +1,5 @@
+gspread
+from oauth2client
+mysql
+mysql-connector
+pprint
