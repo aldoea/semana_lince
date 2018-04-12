@@ -19,6 +19,48 @@ Se requiere la reescritura de URLs o URLs limpias en el servidor Apache, PHP y C
 
 _Nota: Si se desea que el sitio web o los servicios web estén disponibles desde Internet, se requiere una dirección IP publica que este asignada al servidor, para así poder tener acceso a el desde fuera de la red._
 
+## Paquetería
+
+**Instalar Apache**
+
+`sudo apt-get install apache2`
+
+Habilitar `mod_rewrite`
+
+`sudo a2enmod rewrite`
+
+---
+**Instalar MySQL 5.7**
+
+*Es necesario configurar el repositorio para obtener la última versión. [Ver cómo (inglés).](https://dev.mysql.com/doc/mysql-apt-repo-quick-guide/en/)*
+
+`sudo apt-get install mysql-client mysql-server libmysqlclient-dev mysql-connector-python`
+
+---
+**Instalar PHP y Composer** *(Versión 7.2 o superior)*
+
+Añadir el siguiente [repositorio](https://launchpad.net/~ondrej/+archive/ubuntu/php):
+
+```
+sudo add-apt-repository ppa:ondrej/php
+sudo apt-get update
+```
+
+Instalar PHP y algunas dependencias:
+
+`sudo apt-get install php7.2 php7.2-mysql php7.2-dev php7.2-zip php7.2-bcmath php7.2-mbstring`
+
+[Instalar Composer](https://getcomposer.org/download/) (Los comandos pueden variar):
+```
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+php -r "if (hash_file('SHA384', 'composer-setup.php') === '544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f233e9b180f061') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+php composer-setup.php
+php -r "unlink('composer-setup.php');"
+```
+Mover `composer.phar` a `/usr/bin` (por conveniencia):
+
+`sudo mv composer.phar /usr/bin/composer`
+
 ## API ENDPOINTS:
 
 El nombre de dominio es: ``api.semanalince.itcelaya.edu.mx``
