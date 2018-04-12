@@ -194,6 +194,7 @@ $app->group('/v1', function () use ($app) {
             $stmt->execute();
             if($stmt->RowCount()>0) {
                 $data = $stmt->fetchAll();
+                #print_r($data);die();
                 foreach ($data as $k => $value) {
                     $stmt = $this->db->prepare("SELECT h.id as id_horario, fecha, hora_inicio, hora_final, u.nombre as lugar 
                                                 FROM horario h INNER JOIN ubicacion u
@@ -202,8 +203,8 @@ $app->group('/v1', function () use ($app) {
                     $stmt->bindParam(':id_actividad', $data[$k]['id'], PDO::PARAM_INT);
                     $stmt->execute();
                     $data[$k]['horarios'] = $stmt->fetchAll();   
+                    $data[$k]['imagen'] = getenv("IMAGE_PATH").$data[$k]['tipo'].".jpeg";
                 }
-                $data[$key]['imagen'] = getenv("IMAGE_PATH").$data[$key]['tipo'].".jpeg";
                 array_push($response_data, array("nombre" => $categorias[$key]['nombre'], "actividades" => $data));   
             }
         }
