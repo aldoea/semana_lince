@@ -7,7 +7,7 @@ from mysql.connector import errorcode
 import time
 from DB import config
 import pprint
-import sys
+
 
 
 def insert_ponente():
@@ -95,8 +95,8 @@ def insert_actividad_ponente():
 
 def insert_horario():
 	query = (
-				"INSERT INTO horario (id_actividad, fecha,hora_inicio, id_ubicacion, capacidad)"
-				" VALUES ({num_actividad}, '{fecha}', '{hora_inicio}',"
+				"INSERT INTO horario (id_actividad, fecha,hora_inicio, hora_final, id_ubicacion, capacidad)"
+				" VALUES ({num_actividad}, '{fecha}', '{hora_inicio}','{hora_final}',"
 						"(SELECT ubicacion.id FROM ubicacion WHERE ubicacion.nombre = '{lugar}'), {capacidad});"
 	)
 	for horario in horarios_rows:
@@ -105,6 +105,7 @@ def insert_horario():
 										num_actividad=horario['num_actividad'], 
 										fecha = time.strftime('%Y/%m/%d' ,time.strptime(horario['fecha'], '%Y/%m/%d') ),
 										hora_inicio = time.strftime('%H:%M:%S' ,time.strptime(horario['hora_inicio'], '%H:%M:%S')),										
+										hora_final = time.strftime('%H:%M:%S' ,time.strptime(horario['hora_final'], '%H:%M:%S')),										
 										lugar = horario['lugar'] if isinstance(horario['lugar'], int) else horario['lugar'].encode('utf-8'), 
 										capacidad = 30 if horario['capacidad'] == '' else horario['capacidad']
 						)
@@ -124,7 +125,7 @@ activ = doc.worksheet("ACTIVIDADES")
 horarios = doc.worksheet("HORARIOS")
 
 pp = pprint.PrettyPrinter()
-# Extract and print all of the values
+
 actividad_rows = activ.get_all_records()
 horarios_rows = horarios.get_all_records()
 
