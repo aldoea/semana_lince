@@ -88,7 +88,8 @@ _Las actividades deben de ser filtradas por id_especialidad donde excluyan las q
 			"id_responsable":1,
 			"nombre_responsable": "Francisco Ramos",
 			"id_categoria":1,
-			"categoria": "Academica"
+			"categoria": "Academica",
+			"imagen":"image/path.jpg"
 		},{
 			"id": 2,
 			"nombre": "Capturando ondas gravitatorias con un limon",			
@@ -106,7 +107,8 @@ _Las actividades deben de ser filtradas por id_especialidad donde excluyan las q
 			"id_responsable":1,
 			"nombre_responsable": "Stephen Hawkings",
 			"id_categoria":1,
-			"categoria": "Academica"
+			"categoria": "Academica",
+			"imagen":"image/path.jpg"
 		}
 		],
 	"num_actividades":2
@@ -143,7 +145,8 @@ _Todas las actividades agrupadas por su categoria_
                         "hora_final": "10:00:00",
                         "lugar": "Ubicacion1"
                     }
-                ]
+				],
+				"imagen":"image/path.jpg"
             },
             {
                 "id": "3",
@@ -164,7 +167,8 @@ _Todas las actividades agrupadas por su categoria_
                         "hora_final": "14:00:00",
                         "lugar": "Ubicacion1"
                     }
-                ]
+				],
+				"imagen":"image/path.jpg"
             },
             {
                 "id": "4",
@@ -185,7 +189,8 @@ _Todas las actividades agrupadas por su categoria_
                         "hora_final": "11:00:00",
                         "lugar": "Ubicacion1"
                     }
-                ]
+				],
+				"imagen":"image/path.jpg"
             }
         ]
     },
@@ -211,7 +216,8 @@ _Todas las actividades agrupadas por su categoria_
                         "hora_final": "12:00:00",
                         "lugar": "Ubicacion1"
                     }
-                ]
+				],
+				"imagen":"image/path.jpg"
             }
         ]
     }
@@ -253,7 +259,8 @@ _Las actividades deben de ser filtradas por id_categoria_
 			"id_responsable":1,
 			"nombre_responsable": "Francisco Ramos",
 			"id_categoria":1,
-			"categoria": "Academica"
+			"categoria": "Academica",
+			"imagen":"image/path.jpg"
 		},{
 			"id": 2,
 			"nombre": "Capturando ondas gravitatorias con un limon",			
@@ -272,7 +279,8 @@ _Las actividades deben de ser filtradas por id_categoria_
 			"id_responsable":1,
 			"nombre_responsable": "Stephen Hawkings",
 			"id_categoria":1,
-			"categoria": "Academica"
+			"categoria": "Academica",
+			"imagen":"image/path.jpg"
 		}
 		],
 	"num_actividades":2
@@ -304,7 +312,8 @@ _Las actividades deben de ser filtradas por id_categoria_
 		"id_responsable":1,
 		"nombre_responsable": "Francisco Ramos",
 		"id_categoria":1,
-		"categoria": "Academica"
+		"categoria": "Academica",
+		"imagen":"image/path.jpg"
 	}
 }
 ```
@@ -329,7 +338,8 @@ _Las actividades deben de ser filtradas por id_categoria_
 			"id_responsable":1,
 			"nombre_responsable": "Francisco Ramos",
 			"id_categoria":1,
-			"categoria": "Academica"
+			"categoria": "Academica",
+			"imagen":"image/path.jpg"
 		},{
 			"id": 2,
 			"nombre": "Capturando ondas gravitatorias con un limon",
@@ -343,7 +353,8 @@ _Las actividades deben de ser filtradas por id_categoria_
 			"id_responsable":1,
 			"nombre_responsable": "Stephen Hawkings",
 			"id_categoria":1,
-			"categoria": "Academica"
+			"categoria": "Academica",
+			"imagen":"image/path.jpg"
 		},{
 			"id": 3,
 			"nombre": "Mapeando el ADN humano",			
@@ -357,7 +368,8 @@ _Las actividades deben de ser filtradas por id_categoria_
 			"id_responsable":1,
 			"nombre_responsable": "Luis Pasteur",
 			"id_categoria":1,
-			"categoria": "Academica"
+			"categoria": "Academica",
+			"imagen":"image/path.jpg"
 		}],
 	"num_actividades":3
 }

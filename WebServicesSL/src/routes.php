@@ -202,10 +202,9 @@ $app->group('/v1', function () use ($app) {
                     $stmt->bindParam(':id_actividad', $data[$k]['id'], PDO::PARAM_INT);
                     $stmt->execute();
                     $data[$k]['horarios'] = $stmt->fetchAll();   
-                    $data[$key]['imagen'] = getenv("IMAGE_PATH").$data[$key]['tipo'].".jpeg";
                 }
-                array_push($response_data, array("nombre" => $categorias[$key]['nombre'], 
-                                                 "actividades" => $data));   
+                $data[$key]['imagen'] = getenv("IMAGE_PATH").$data[$key]['tipo'].".jpeg";
+                array_push($response_data, array("nombre" => $categorias[$key]['nombre'], "actividades" => $data));   
             }
         }
         if(count($response_data)>0)
@@ -322,9 +321,12 @@ $app->group('/v1', function () use ($app) {
                                     WHERE al.nocontrol = :nocontrol");
         $stmt->bindParam(':nocontrol', $nocontrol, PDO::PARAM_INT);
         $stmt->execute();
-        
+        $data = $stmt->fetchAll();
+        foreach($data as $key => $value) {
+            $data[$key]['imagen'] = getenv("IMAGE_PATH").$data[$key]['tipo'].".jpeg";
+        }
         if($stmt->RowCount() > 0)
-            $response = $response->withJson(array('actividades'=>$stmt->fetchAll(), 
+            $response = $response->withJson(array('actividades'=>$data, 
                                                   'num_actividades'=>$stmt->RowCount()),
                                                    200);
         else
