@@ -115,9 +115,15 @@ _Las actividades deben de ser filtradas por id_especialidad donde excluyan las q
 }
 ```
 
-_Todas las actividades agrupadas por su categoria_
 
-`GET /v1/actividad/categoria`
+### Todas las actividades agrupadas por categoria
+_Todas las actividades son filtradas por especialidad y agrupadas por su categoria_
+_Si no se tiene el id de especialidad mandar 0_
+
+Autenticado:
+`GET /v1/actividad/especialidad/:id_especialidad/categoria`
+Sin autenticar:
+`GET /v1/actividad/especialidad/0/categoria`
 
 #### Returns:
 
@@ -226,7 +232,9 @@ _Todas las actividades agrupadas por su categoria_
 
 _Las actividades deben de ser filtradas por id_categoria_
 
-- No debe requerir un token para consumirse
+-No debe requerir un token para consumirse
+
+### Actividades por una sola categoria
 
 `GET /v1/actividad/categoria/:id_categoria`
 
