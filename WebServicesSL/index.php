@@ -18,7 +18,6 @@ $dotenv->required([
 
 $settings = require_once __DIR__.'/src/settings.php'; 		// Configuraciones del proyecto
 $app = new \Slim\App($settings); 	                        // Instancia slim configuraciones
-
 require_once __DIR__.'/src/dependencies.php'; 	            // Establecemos las dependencias
 require_once __DIR__.'/src/middleware.php';			        // Middlewares del api
 require_once __DIR__.'/src/routes.php'; 					// Registramos las Rutas (API'S)
