@@ -299,7 +299,7 @@ $app->group('/v1', function () use ($app) {
             $stmt->bindParam(':id_actividad', $data[0]['id'], PDO::PARAM_INT);
             $stmt->execute();
             $data[0]['horarios'] = $stmt->fetchAll();
-            $data[0]['imagen'] = getenv("IMAGE_PATH").strtolower($data[0]['tipo']).".jpeg";   
+            $data[0]['imagen'] = getenv("IMAGE_PATH").strtolower($data[0]['tipo']).".jpg";   
             $response = $response->withJson($data, 200);
         }else {
             $response = $response->withJson(array(
