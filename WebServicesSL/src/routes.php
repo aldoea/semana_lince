@@ -1,7 +1,6 @@
 <?php
 use Firebase\JWT\JWT;
 
-
 /*
     __        ______     _______  __  .__   __. 
     |  |      /  __  \   /  _____||  | |  \ |  | 
@@ -24,12 +23,12 @@ $app->group('/v1', function () use ($app) {
         if ($stmt->RowCount() > 0) {
             #Generate token
             $now = new DateTime();
-            $expiration = new DateTime("+60 minutes"); #Stablish token expiration time 
+           # $expiration = new DateTime("+60 minutes"); #Stablish token expiration time 
             $server = $request->getServerParams();
 
             $payload = [
                 "iat" => $now->getTimeStamp(),
-                "exp" => $expiration->getTimeStamp(),
+            #    "exp" => $expiration->getTimeStamp(),
                 "sub" => $server["PHP_AUTH_USER"]
             ]; 
             $secret = getenv('JWT_PASSWORD'); #get password of environment variable
@@ -42,7 +41,7 @@ $app->group('/v1', function () use ($app) {
                 "id_especialidad"=>$data[0]['id_especialidad'],
                 "message" => "¡Bienvenido!",
                 "token" => $token,
-                "token_expiration" => $expiration->getTimeStamp()
+                //"token_expiration" => $expiration->getTimeStamp()
             ];
 
             $response = $response->withJson($response_array, 200);
@@ -359,7 +358,8 @@ $app->group('/v1', function () use ($app) {
         foreach($data as $key => $value) {
             $data[$key]['imagen'] = getenv("IMAGE_PATH").strtolower($data[$key]['tipo']).".jpg";
             ob_start();
-            QRCode::png("https://api.semanalince.itcelaya.edu.mx/v1/actividad/asistencia/".$data[$key]['qr'], null);
+            $qr = new Codelint\QRCode\QRCode();
+            $qr->png("https://api.semanalince.itcelaya.edu.mx/v1/actividad/asistencia/".$data[$key]['qr'], null);
             $imageString = base64_encode( ob_get_contents() );
             ob_end_clean();            
             $data[$key]['qr_url'] = $imageString;
@@ -384,7 +384,7 @@ $app->group('/v1', function () use ($app) {
     */
 
     $app->post('/actividad/alumno', function($request, $response) {
-        $nocontrol = $request->getParsedBody()['nocontrol'];
+        $nocontrol = $request->getParsedBody()['no_control'];
         $id_horario = $request->getParsedBody()['id_horario'];
 
         $stmt = $this->db->prepare("SELECT r.id_horario as id_horario, h.capacidad as capacidad 
@@ -413,6 +413,7 @@ $app->group('/v1', function () use ($app) {
         $fecha_horario_a_insertar = $data_horario_a_insertar[0]['fecha'];
         $horario_hora_inicio = strtotime($data_horario_a_insertar[0]['hora_inicio']);
         $horario_hora_final = strtotime($data_horario_a_insertar[0]['hora_final']); 
+
         if($stmt->RowCount() > 0) {
             $stmt = $this->db->prepare("SELECT id FROM alumno WHERE nocontrol=:nocontrol");
             $stmt->bindParam(':nocontrol', $nocontrol, PDO::PARAM_INT);
@@ -526,7 +527,7 @@ $app->group('/v1', function () use ($app) {
         return $response;
     });
 
-    $app->get('/actividad/asistencia/{qr}', function($request, $response){
+    $app->get('/actividad/asistencia/{qr}', function($request, $response) {
         $qr = $request->getAttribute('qr');
         $stmt = $this->db->prepare("SELECT 
                                     r.id_horario, 

@@ -4,8 +4,51 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "c0f362e6a5e90ca2f39202e0ef0e4f47",
+    "content-hash": "7131f05549f92e06b7d39b09a417c6a1",
     "packages": [
+        {
+            "name": "codelint/phpqrcode",
+            "version": "v0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/codelint/phpqrcode.git",
+                "reference": "26815e971d27f54b97ba3ba5ee46d1e24d68daa8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/codelint/phpqrcode/zipball/26815e971d27f54b97ba3ba5ee46d1e24d68daa8",
+                "reference": "26815e971d27f54b97ba3ba5ee46d1e24d68daa8",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Codelint\\": [
+                        "src/"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GNU"
+            ],
+            "authors": [
+                {
+                    "name": "codelint",
+                    "email": "codelint@foxmail.com",
+                    "homepage": "http://www.inotseeyou.com"
+                }
+            ],
+            "description": "a php library to generate qrcode",
+            "keywords": [
+                "library",
+                "qr",
+                "qrcode",
+                "tool",
+                "two-dimensional"
+            ],
+            "time": "2014-11-05T07:41:59+00:00"
+        },
         {
             "name": "container-interop/container-interop",
             "version": "1.2.0",
@@ -398,16 +441,16 @@
         },
         {
             "name": "tuupola/slim-jwt-auth",
-            "version": "2.3.3",
+            "version": "2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tuupola/slim-jwt-auth.git",
-                "reference": "1f9fb673e4f5bb9ca4104e328aabfc2e4af38c32"
+                "reference": "bca54de41a8207d4d67faf3601a06a96cb7ed48f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tuupola/slim-jwt-auth/zipball/1f9fb673e4f5bb9ca4104e328aabfc2e4af38c32",
-                "reference": "1f9fb673e4f5bb9ca4104e328aabfc2e4af38c32",
+                "url": "https://api.github.com/repos/tuupola/slim-jwt-auth/zipball/bca54de41a8207d4d67faf3601a06a96cb7ed48f",
+                "reference": "bca54de41a8207d4d67faf3601a06a96cb7ed48f",
                 "shasum": ""
             },
             "require": {
@@ -417,6 +460,7 @@
                 "psr/log": "^1.0"
             },
             "require-dev": {
+                "overtrue/phplint": "^0.2.4",
                 "phpunit/phpunit": "^4.6",
                 "squizlabs/php_codesniffer": "^2.3",
                 "zendframework/zend-diactoros": "^1.3"
@@ -448,7 +492,7 @@
                 "middleware",
                 "psr-7"
             ],
-            "time": "2017-07-12T09:57:35+00:00"
+            "time": "2018-04-03T06:12:18+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
