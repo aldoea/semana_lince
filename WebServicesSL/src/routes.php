@@ -331,7 +331,8 @@ $app->group('/v1', function () use ($app) {
                                             r.id as id_responsable,
                                             r.nombre as nombre_responsable,
                                             c.id as id_categoria ,
-                                            c.nombre as catergoria
+                                            c.nombre as catergoria,
+                                            re.qr
                                     FROM 	actividad a
                                             INNER JOIN horario h
                                                 ON h.id_actividad = a.id
