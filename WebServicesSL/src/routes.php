@@ -33,9 +33,12 @@ $app->group('/v1', function () use ($app) {
             ]; 
             $secret = getenv('JWT_PASSWORD'); #get password of environment variable
             $token = JWT::encode($payload, $secret, "HS256");
-            
+            $data = $stmt->fetchAll();
             $response_array = [
-                "data" => $stmt->fetchAll(),
+                "id" => $data[0]['id'],
+                "nocontrol"=>$data[0]['nocontrol'],
+                "nombre"=>$data[0]['nombre'],
+                "id_especialidad"=>$data[0]['id_especialidad'],
                 "message" => "¡Bienvenido!",
                 "token" => $token,
                 "token_expiration" => $expiration->getTimeStamp()
