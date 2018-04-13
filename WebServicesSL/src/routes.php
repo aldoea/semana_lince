@@ -1,6 +1,13 @@
 <?php
 use Firebase\JWT\JWT;
 
+// apxjcl again
+// return HTTP 200 for HTTP OPTIONS requests
+$app->map(['OPTIONS'], '/:x+', function($request, $response, $args) {
+    http_response_code(200);
+});
+
+// my job here is done
 
 /*
     __        ______     _______  __  .__   __. 
@@ -24,7 +31,8 @@ $app->group('/v1', function () use ($app) {
         if ($stmt->RowCount() > 0) {
             #Generate token
             $now = new DateTime();
-            $expiration = new DateTime("+60 minutes"); #Stablish token expiration time 
+            $expiration = new DateTime("+7 days"); 
+            #Stablish token expiration time 
             $server = $request->getServerParams();
 
             $payload = [
@@ -49,7 +57,7 @@ $app->group('/v1', function () use ($app) {
         } else {
             $response = $response->withJson(array(
                 'message' => 'Los datos son incorrectos, verifica e intente nuevamente'
-            ), 200);
+            ), 400);
         }
         return $response;
     });
@@ -385,7 +393,7 @@ $app->group('/v1', function () use ($app) {
     */
 
     $app->post('/actividad/alumno', function($request, $response) {
-        $nocontrol = $request->getParsedBody()['nocontrol'];
+        $nocontrol = $request->getParsedBody()['no_control'];
         $id_horario = $request->getParsedBody()['id_horario'];
 
         $stmt = $this->db->prepare("SELECT r.id_horario as id_horario, h.capacidad as capacidad 
@@ -414,6 +422,7 @@ $app->group('/v1', function () use ($app) {
         $fecha_horario_a_insertar = $data_horario_a_insertar[0]['fecha'];
         $horario_hora_inicio = strtotime($data_horario_a_insertar[0]['hora_inicio']);
         $horario_hora_final = strtotime($data_horario_a_insertar[0]['hora_final']); 
+
         if($stmt->RowCount() > 0) {
             $stmt = $this->db->prepare("SELECT id FROM alumno WHERE nocontrol=:nocontrol");
             $stmt->bindParam(':nocontrol', $nocontrol, PDO::PARAM_INT);
@@ -527,7 +536,7 @@ $app->group('/v1', function () use ($app) {
         return $response;
     });
 
-    $app->get('/actividad/asistencia/{qr}', function($request, $response){
+    $app->get('/actividad/asistencia/{qr}', function($request, $response) {
         $qr = $request->getAttribute('qr');
         $stmt = $this->db->prepare("SELECT 
                                     r.id_horario, 

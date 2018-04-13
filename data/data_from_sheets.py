@@ -114,6 +114,12 @@ def insert_horario():
 			except Exception as e:
 				print(horario['num_actividad'],e)				
 
+def update_neutrales():
+	try:
+		cursor.execute("UPDATE actividad SET id_especialidad = 99 WHERE id_especialidad IS NULL;")
+	except Exception as e:
+		print(e)
+
 # use creds to create a client to interact with the Google Drive API
 scope = ['https://spreadsheets.google.com/feeds',
          'https://www.googleapis.com/auth/drive'] 
@@ -147,7 +153,8 @@ try:
 	print('')
 	print('=========================>	 A C T I V I D A D  L O G S 					<=========================')
 	print('')
-	insert_actividad()	
+	insert_actividad()
+	update_neutrales()	
 	print('')
 	print('=========================>	 A C T I V I D A D _ P O N E N T E  L O G S 	<=========================')
 	print('')
