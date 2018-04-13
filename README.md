@@ -79,13 +79,11 @@ Ejemplo request body:
 
 #### Returns:
 ```JSON
-{  
-	"data":{
-		"id":1,
-		"nocontrol":14030557,
-		"nombre":"Benito Juarez",
-		"id_especialidad":1
-	},
+{  	
+	"id":1,
+	"nocontrol":14030557,
+	"nombre":"Benito Juarez",
+	"id_especialidad":1,
 	"message": "¡Bienvenido!",
 	"token": "SUPER-SECRET-TOKEN",
     "token_expiration": ...
