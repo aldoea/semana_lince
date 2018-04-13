@@ -1,6 +1,7 @@
 <?php
 use Firebase\JWT\JWT;
 
+
 /*
     __        ______     _______  __  .__   __. 
     |  |      /  __  \   /  _____||  | |  \ |  | 
@@ -525,7 +526,32 @@ $app->group('/v1', function () use ($app) {
         return $response;
     });
 
-    $app->get('/actividad/asistencia/{qr}'), function(){
+    $app->get('/actividad/asistencia/{qr}', function($request, $response){
         $qr = $request->getAttribute('qr');
+        $stmt = $this->db->prepare("SELECT 
+                                    r.id_horario, 
+                                    r.id_alumno,
+                                    h.hora_inicio,
+                                    h.hora_final
+                                    FROM registro r
+                                    INNER JOIN horario h
+                                        ON r.id_horario = h.id
+                                    WHERE qr = :qr");
+        $stmt->bindParam(':qr', $qr, PDO::PARAM_STR);
+        $stmt->execute();
+        if($stmt->RowCount()>0) {
+            $data = $stmt->fetchAll();
+            if(time() >= strtotime($data[0]['hora_inicio']) && time() <= strtotime($data[0]['hora_fin'])){
+                $stmt = $this->db->prepare("UPDATE registro 
+                                           SET asistencia = 1
+                                           WHERE id_horario = :id_horario AND id_alumno = :id_alumno"); 
+                
+                return $response->withRedirect('/public/successful.html');
+            }else{
+                return $response->withRedirect('/public/unsuccessful.html');
+            }
+        }else{
+            return $response->withRedirect('/public/registernotfound.html');
+        }
     });
 });

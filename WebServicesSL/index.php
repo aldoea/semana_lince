@@ -1,5 +1,5 @@
 <?php
-
+require 'vendor/lib/qrlib.php';
 require_once 'vendor/autoload.php';
 
 use \Psr\Http\Message\ServerRequestInterface as Request;

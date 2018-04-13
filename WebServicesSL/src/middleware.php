@@ -4,7 +4,7 @@ $app->add(new \Slim\Middleware\JwtAuthentication([
     "secure" => true,
     "relaxed" => ["localhost"],
     "path" => "/v1",
-    "passthrough" => ["/v1/login", "/v1/actividad/categoria/", "/v1/actividad/especialidad/"],
+    "passthrough" => ["/v1/login", "/v1/actividad/categoria/", "/v1/actividad/especialidad/", "/v1/actividad/asistencia/"],
     "secret" => getenv('JWT_PASSWORD'),
     "callback" => function ($request, $response, $arguments) use ($container) {
         $container["jwt"] = $arguments["decoded"];
