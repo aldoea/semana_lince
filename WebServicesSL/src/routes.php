@@ -31,13 +31,13 @@ $app->group('/v1', function () use ($app) {
         if ($stmt->RowCount() > 0) {
             #Generate token
             $now = new DateTime();
-            $expiration = new DateTime("+7 days"); 
+            //$expiration = new DateTime("+7 days"); 
             #Stablish token expiration time 
             $server = $request->getServerParams();
 
             $payload = [
                 "iat" => $now->getTimeStamp(),
-                "exp" => $expiration->getTimeStamp(),
+                //"exp" => $expiration->getTimeStamp(),
                 "sub" => $server["PHP_AUTH_USER"]
             ]; 
             $secret = getenv('JWT_PASSWORD'); #get password of environment variable
@@ -50,7 +50,7 @@ $app->group('/v1', function () use ($app) {
                 "id_especialidad"=>$data[0]['id_especialidad'],
                 "message" => "¡Bienvenido!",
                 "token" => $token,
-                "token_expiration" => $expiration->getTimeStamp()
+                //"token_expiration" => $expiration->getTimeStamp()
             ];
 
             $response = $response->withJson($response_array, 200);
