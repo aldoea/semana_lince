@@ -337,6 +337,7 @@ $app->group('/v1', function () use ($app) {
                                             a.material_participante ,
                                             a.descripcion ,
                                             u.nombre as lugar,
+                                            h.id as id_horario,
                                             h.fecha,
                                             h.hora_inicio,
                                             h.hora_final,
