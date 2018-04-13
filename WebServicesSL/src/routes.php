@@ -358,11 +358,12 @@ $app->group('/v1', function () use ($app) {
         $data = $stmt->fetchAll();
         foreach($data as $key => $value) {
             $data[$key]['imagen'] = getenv("IMAGE_PATH").strtolower($data[$key]['tipo']).".jpg";
-            ob_start();
-            QRCode::png("https://api.semanalince.itcelaya.edu.mx/v1/actividad/asistencia/".$data[$key]['qr'], null);
-            $imageString = base64_encode( ob_get_contents() );
-            ob_end_clean();            
-            $data[$key]['qr_url'] = $imageString;
+            // ob_start();
+            // QRCode::png("https://api.semanalince.itcelaya.edu.mx/v1/actividad/asistencia/".$data[$key]['qr'], null);
+            // $imageString = base64_encode( ob_get_contents() );
+            // ob_end_clean();            
+            // $data[$key]['qr_url'] = $imageString;
+            $data[$key]['qr_url'] = "asfewwfnweolkewm";
         }
         if($stmt->RowCount() > 0)
             $response = $response->withJson(array('actividades'=>$data, 
