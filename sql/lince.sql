@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS alumno (
 CREATE TABLE IF NOT EXISTS registro (
   id_horario BIGINT NOT NULL,
   id_alumno  BIGINT NOT NULL,
-  qr         CHAR(174) UNIQUE,
+  qr         CHAR(172) UNIQUE,
   asistencia BOOL   NOT NULL DEFAULT FALSE,
   PRIMARY KEY (id_horario, id_alumno),
   FOREIGN KEY (id_horario) REFERENCES horario (id),
@@ -107,7 +107,11 @@ CREATE TRIGGER registro_qr
     INTO nc
     FROM alumno
     WHERE id = new.id_alumno;
-    SET new.qr = to_base64(sha2(concat('$myl1ttl3p0ny$', nc, '|', new.id_horario, '$fr13ndsh1p15m4g1c$'), 512));
+    SET new.qr =
+    replace(
+        to_base64(
+            sha2(concat('$myl1ttl3p0ny$', nc, '|', new.id_horario, '$fr13ndsh1p15m4g1c$'), 512)),
+        '\n', '');
   END;
 
 CREATE USER IF NOT EXISTS 'lincews'@'localhost'
