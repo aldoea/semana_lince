@@ -354,6 +354,11 @@ $app->group('/v1', function () use ($app) {
         $data = $stmt->fetchAll();
         foreach($data as $key => $value) {
             $data[$key]['imagen'] = getenv("IMAGE_PATH").strtolower($data[$key]['tipo']).".jpg";
+            ob_start();
+            QRCode::png("https://api.semanalince.itcelaya.edu.mx/v1/actividad/asistencia/".$data[$key]['qr'], null);
+            $imageString = base64_encode( ob_get_contents() );
+            ob_end_clean();            
+            $data[$key]['qr_url'] = $imageString;
         }
         if($stmt->RowCount() > 0)
             $response = $response->withJson(array('actividades'=>$data, 
@@ -515,5 +520,9 @@ $app->group('/v1', function () use ($app) {
             500);
         }
         return $response;
+    });
+
+    $app->get('/actividad/asistencia/{qr}'), function(){
+        $qr = $request->getAttribute('qr');
     });
 });
