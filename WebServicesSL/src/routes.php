@@ -2,13 +2,13 @@
 use Firebase\JWT\JWT;
 
 /*
-    __        ______     _______  __  .__   __. 
+     __        ______     _______  __  .__   __. 
     |  |      /  __  \   /  _____||  | |  \ |  | 
     |  |     |  |  |  | |  |  __  |  | |   \|  | 
     |  |     |  |  |  | |  | |_ | |  | |  . `  | 
     |  `----.|  `--'  | |  |__| | |  | |  |\   | 
     |_______| \______/   \______| |__| |__| \__| 
-    */
+*/
 
 
 $app->group('/v1', function () use ($app) {
@@ -41,7 +41,7 @@ $app->group('/v1', function () use ($app) {
                 "id_especialidad"=>$data[0]['id_especialidad'],
                 "message" => "¡Bienvenido!",
                 "token" => $token,
-                //"token_expiration" => $expiration->getTimeStamp()
+                #"token_expiration" => $expiration->getTimeStamp()
             ];
 
             $response = $response->withJson($response_array, 200);
@@ -409,12 +409,12 @@ $app->group('/v1', function () use ($app) {
 
         $stmt->bindParam(':id_horario', $id_horario, PDO::PARAM_INT);
         $stmt->execute();
-        $data_horario_a_insertar = $stmt->fetchAll();
-        $fecha_horario_a_insertar = $data_horario_a_insertar[0]['fecha'];
-        $horario_hora_inicio = strtotime($data_horario_a_insertar[0]['hora_inicio']);
-        $horario_hora_final = strtotime($data_horario_a_insertar[0]['hora_final']); 
-
+        
         if($stmt->RowCount() > 0) {
+            $data_horario_a_insertar = $stmt->fetchAll();
+            $fecha_horario_a_insertar = $data_horario_a_insertar[0]['fecha'];
+            $horario_hora_inicio = strtotime($data_horario_a_insertar[0]['hora_inicio']);
+            $horario_hora_final = strtotime($data_horario_a_insertar[0]['hora_final']); 
             $stmt = $this->db->prepare("SELECT id FROM alumno WHERE nocontrol=:nocontrol");
             $stmt->bindParam(':nocontrol', $nocontrol, PDO::PARAM_INT);
             $stmt->execute();
@@ -434,27 +434,31 @@ $app->group('/v1', function () use ($app) {
                             $stmt->bindParam(':id_horario', $horarios_inscritos[$key]['id_horario'], PDO::PARAM_INT);
                             $stmt->bindParam(':fecha', $fecha_horario_a_insertar, PDO::PARAM_STR);
                             $stmt->execute();
-                            $data = $stmt->fetchAll();                            
+                            $data = $stmt->fetchAll(); 
+                            $hi = strtotime($data[0]['hora_inicio']);
+                            $hf =  strtotime($data[0]['hora_final']);   
                             if($stmt->RowCount()>0){
-                                if($horario_hora_inicio <= strtotime($data[0]['hora_inicio']) &&
-                                $horario_hora_final  >  strtotime($data[0]['hora_inicio']) &&
-                                $horario_hora_final  <= strtotime($data[0]['hora_final'])){
-                                    $horario_cruzado = True;
-                                    break;
-                                }else{
-                                    if($horario_hora_inicio > strtotime($data[0]['hora_inicio']) &&
-                                    $horario_hora_inicio < strtotime($data[0]['hora_final']) &&
-                                    $horario_hora_final >= strtotime($data[0]['hora_final'])){
-                                        $horario_cruzado = True;
-                                        break;
-                                    }else {
-                                        if($horario_hora_inicio < strtotime($data[0]['hora_inicio']) &&
-                                            $horario_hora_final  > strtotime($data[0]['hora_final'])){
-                                                $horario_cruzado = True;
-                                                break;
-                                            }
-                                    }
-                                }
+                                if($horario_hora_inicio <= $hi &&
+                                   $horario_hora_final >= $hf){
+                                       $horario_cruzado = True;
+                                   }else{
+                                       if($horario_hora_inicio >= $hi &&
+                                          $horario_hora_final <=$hf){
+                                              $horario_cruzado = True;
+                                          } else {
+                                              if($horario_hora_inicio < $hi &&
+                                                 $horario_hora_final > $hi &&
+                                                 $horario_hora_final <$hf){
+                                                     $horario_cruzado = True;
+                                                 } else {
+                                                    if($horario_hora_inicio > $hi &&
+                                                       $horario_hora_inicio <$hf &&
+                                                       $horario_hora_final >$hf) {
+                                                           $horario_cruzado = True;
+                                                       }
+                                                 }
+                                          }
+                                   }
                             } 
                         }
                     }
