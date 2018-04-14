@@ -230,7 +230,10 @@ $app->group('/v1', function () use ($app) {
         $stmt->execute();
         $categorias = $stmt->fetchAll();
         $response_data = array(); 
+        $add_activity==True;
+        $horarios_disp = array();
         foreach($categorias as $key => $value) {
+            $actividades = array();
             $stmt = $this->db->prepare($query);
             if($idEspecialidad!=0)
                 $stmt->bindParam(':id_especialidad', $idEspecialidad, PDO::PARAM_INT);
@@ -245,10 +248,31 @@ $app->group('/v1', function () use ($app) {
                                                 WHERE id_actividad = :id_actividad");
                     $stmt->bindParam(':id_actividad', $data[$k]['id'], PDO::PARAM_INT);
                     $stmt->execute();
-                    $data[$k]['horarios'] = $stmt->fetchAll();   
-                    $data[$k]['imagen'] = getenv("IMAGE_PATH").strtolower($data[$k]['tipo']).".jpg";
+                    $data_horarios = $stmt->fetchAll();
+                    foreach($data_horarios as $i => $v) {
+                        $stmt = $this->db->prepare("SELECT r.id_horario as id_horario, h.capacidad as capacidad 
+                                                    FROM registro r JOIN horario h
+                                                        ON r.id_horario = h.id 
+                                                    WHERE id_horario = :id_horario");
+                        $stmt->bindParam(':id_horario', $data_horarios[$i]['id_horario'], PDO::PARAM_INT);
+                        $stmt->execute();
+                        $inscritos=$stmt->RowCount();
+                        $c = $stmt->fetchAll()[0]['capacidad'];
+                        if($inscritos > 0){
+                            if($inscritos<$c) 
+                                array_push($horarios_disp, $data_horarios[$i]);
+                        }else{
+                            array_push($horarios_disp, $data_horarios[$i]);
+                        }
+                    }
+                    if(count($horarios_disp)>0){
+                        $data[$k]['horarios'] = $horarios_disp;
+                        $horarios_disp = array();
+                        $data[$k]['imagen'] = getenv("IMAGE_PATH").strtolower($data[$k]['tipo']).".jpg";
+                        array_push($actividades, $data[$k]);
+                    }
                 }
-                array_push($response_data, array("nombre" => $categorias[$key]['nombre'], "actividades" => $data));   
+                array_push($response_data, array("nombre" => $categorias[$key]['nombre'], "actividades" => $actividades));   
             }
         }
         if(count($response_data)>0)
