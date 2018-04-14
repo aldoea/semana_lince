@@ -1,9 +1,11 @@
 USE lince;
 
+INSERT INTO servicio (id, nombre) VALUES (-1, 'TBA');
 INSERT INTO servicio (nombre) VALUES
-  ('Interno'),
-  ('Externo');
+('Interno'),
+('Externo');
 
+INSERT INTO tipo (id, nombre) VALUES (-1, 'TBA');
 INSERT INTO tipo (nombre) VALUES
   ('Taller'),
   ('Conferencia'),
@@ -12,6 +14,7 @@ INSERT INTO tipo (nombre) VALUES
   ('Actividad');
 
 
+INSERT INTO categoria (id, nombre) VALUES (-1, 'TBA');
 INSERT INTO categoria (nombre) VALUES
   ('Academia'),
   ('Empresas'),
@@ -33,6 +36,8 @@ INSERT INTO especialidad (id, nombre) VALUES
   (15, 'Ingeniería en Informática'),
   (16, 'Licenciatura en Administración'),
   (99, 'Neutral');
+
+INSERT INTO responsable (id, nombre) VALUES (-1, 'TBA');
 
 INSERT INTO alumno (nocontrol, nombre, semestre, id_especialidad) VALUES
   ('16030729', 'Almanza Ramírez Karla Daniela', 4, 1),

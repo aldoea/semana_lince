@@ -1,6 +1,14 @@
 <?php
 use Firebase\JWT\JWT;
 
+// apxjcl again
+// return HTTP 200 for HTTP OPTIONS requests
+$app->map(['OPTIONS'], '/:x+', function($request, $response, $args) {
+    http_response_code(200);
+});
+
+// my job here is done
+
 /*
      __        ______     _______  __  .__   __. 
     |  |      /  __  \   /  _____||  | |  \ |  | 
@@ -23,12 +31,13 @@ $app->group('/v1', function () use ($app) {
         if ($stmt->RowCount() > 0) {
             #Generate token
             $now = new DateTime();
-           # $expiration = new DateTime("+60 minutes"); #Stablish token expiration time 
+            //$expiration = new DateTime("+7 days"); 
+            #Stablish token expiration time 
             $server = $request->getServerParams();
 
             $payload = [
                 "iat" => $now->getTimeStamp(),
-            #    "exp" => $expiration->getTimeStamp(),
+                //"exp" => $expiration->getTimeStamp(),
                 "sub" => $server["PHP_AUTH_USER"]
             ]; 
             $secret = getenv('JWT_PASSWORD'); #get password of environment variable
@@ -48,7 +57,7 @@ $app->group('/v1', function () use ($app) {
         } else {
             $response = $response->withJson(array(
                 'message' => 'Los datos son incorrectos, verifica e intente nuevamente'
-            ), 200);
+            ), 400);
         }
         return $response;
     });
@@ -290,7 +299,7 @@ $app->group('/v1', function () use ($app) {
             $stmt->bindParam(':id_actividad', $data[0]['id'], PDO::PARAM_INT);
             $stmt->execute();
             $data[0]['horarios'] = $stmt->fetchAll();
-            $data[0]['imagen'] = getenv("IMAGE_PATH").strtolower($data[0]['tipo']).".jpeg";   
+            $data[0]['imagen'] = getenv("IMAGE_PATH").strtolower($data[0]['tipo']).".jpg";   
             $response = $response->withJson($data, 200);
         }else {
             $response = $response->withJson(array(
@@ -328,6 +337,7 @@ $app->group('/v1', function () use ($app) {
                                             a.material_participante ,
                                             a.descripcion ,
                                             u.nombre as lugar,
+                                            h.id as id_horario,
                                             h.fecha,
                                             h.hora_inicio,
                                             h.hora_final,
@@ -357,12 +367,12 @@ $app->group('/v1', function () use ($app) {
         $data = $stmt->fetchAll();
         foreach($data as $key => $value) {
             $data[$key]['imagen'] = getenv("IMAGE_PATH").strtolower($data[$key]['tipo']).".jpg";
-            ob_start();
-            $qr = new Codelint\QRCode\QRCode();
-            $qr->png("https://api.semanalince.itcelaya.edu.mx/v1/actividad/asistencia/".$data[$key]['qr'], null);
-            $imageString = base64_encode( ob_get_contents() );
-            ob_end_clean();            
-            $data[$key]['qr_url'] = $imageString;
+            // ob_start();
+            // QRCode::png("https://api.semanalince.itcelaya.edu.mx/v1/actividad/asistencia/".$data[$key]['qr'], null);
+            // $imageString = base64_encode( ob_get_contents() );
+            // ob_end_clean();            
+            // $data[$key]['qr_url'] = $imageString;
+            $data[$key]['qr_url'] = "asfewwfnweolkewm";
         }
         if($stmt->RowCount() > 0)
             $response = $response->withJson(array('actividades'=>$data, 

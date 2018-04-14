@@ -387,7 +387,9 @@ _Las actividades deben de ser filtradas por id_categoria_
 			"nombre_responsable": "Francisco Ramos",
 			"id_categoria":1,
 			"categoria": "Academica",
-			"imagen":"image/path.jpg"
+			"imagen":"image/path.jpg",
+			"qr": "aspewjnpñemcñwoxkpwñecmkñweockwñckmweñckwecwec",
+			"qr_url":"qwdkjdnwkdbwjhdbjwhdqjhvsdgqwhvdjqwvdjqwvdjhdvjqdvjhqwbdkqwbdklqwbdqw"
 		},{
 			"id": 2,
 			"nombre": "Capturando ondas gravitatorias con un limon",
@@ -402,7 +404,9 @@ _Las actividades deben de ser filtradas por id_categoria_
 			"nombre_responsable": "Stephen Hawkings",
 			"id_categoria":1,
 			"categoria": "Academica",
-			"imagen":"image/path.jpg"
+			"imagen":"image/path.jpg",
+			"qr": "aspewjnpñemcñwoxkpwñecmkñweockwñckmweñckwecwec",
+			"qr_url":"qwdkjdnwkdbwjhdbjwhdqjhvsdgqwhvdjqwvdjqwvdjhdvjqdvjhqwbdkqwbdklqwbdqw"
 		},{
 			"id": 3,
 			"nombre": "Mapeando el ADN humano",			
@@ -417,7 +421,9 @@ _Las actividades deben de ser filtradas por id_categoria_
 			"nombre_responsable": "Luis Pasteur",
 			"id_categoria":1,
 			"categoria": "Academica",
-			"imagen":"image/path.jpg"
+			"imagen":"image/path.jpg",
+			"qr": "aspewjnpñemcñwoxkpwñecmkñweockwñckmweñckwecwec",
+			"qr_url":"qwdkjdnwkdbwjhdbjwhdqjhvsdgqwhvdjqwvdjqwvdjhdvjqdvjhqwbdkqwbdklqwbdqw"
 		}],
 	"num_actividades":3
 }
@@ -459,4 +465,10 @@ Ejemplo request body:
 }
 ```
 
-### 
+### Registrar asistencia
+
+`GET /v1/actividad/asistencia/:qr`
+
+#### Returns:
+
+HTML file
