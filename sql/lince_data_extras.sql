@@ -1,6 +1,16 @@
 USE lince;
 
 INSERT INTO especialidad (id, nombre) VALUES
+  (255, 'Intercambio');
+
+INSERT INTO alumno (nocontrol, nombre, semestre, id_especialidad) VALUES
+  ('20132329', 'Jesús Alfredo Amaya Obregón', 0, 255),
+  ('55314001', 'Camilo Alejandro Díaz Cárdenas', 0, 255),
+  ('20131378', 'Anderson Fabian Velosa Sanabria', 0, 255),
+  ('21113168', 'Luis Alfredo Rodríguez Londoño', 0, 255),
+  ('29027801', 'Jorge David Peña Carrillo', 0, 255);
+
+INSERT INTO especialidad (id, nombre) VALUES
   (40, 'Maestría en Ingeniería Química'),
   (26, 'Maestría en Ciencias en Ingeniería Bioquímica'),
   (28, 'Maestría en Ciencias en Ingeniería Electrónica'),
